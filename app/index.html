@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PNW Surf Finder</title>
+  <meta name="description" content="Finds where the Pacific Northwest coast is lighting up, including spots nobody has named yet, from live swell, wind and tide forecasts matched against seafloor depth data.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="panel">
+      <header class="brand">
+        <h1>PNW Surf Finder</h1>
+        <p class="tagline">Where the wild coast is lighting up</p>
+      </header>
+
+      <section class="controls" aria-label="Forecast controls">
+        <div class="seg" role="tablist" aria-label="Mode">
+          <button id="mode-time" class="on" role="tab" aria-selected="true">At a time</button>
+          <button id="mode-week" role="tab" aria-selected="false">Best this week</button>
+        </div>
+
+        <div id="time-row" class="time-row">
+          <button id="t-prev" class="icon-btn" aria-label="One hour earlier">‹</button>
+          <div class="time-main">
+            <div id="t-label" class="t-label">Loading…</div>
+            <input id="t-slider" type="range" min="0" max="0" value="0" aria-label="Forecast hour">
+          </div>
+          <button id="t-next" class="icon-btn" aria-label="One hour later">›</button>
+          <button id="t-now" class="chip">Now</button>
+        </div>
+
+        <div class="filters">
+          <label>Show
+            <select id="f-show">
+              <option value="all" selected>All spots</option>
+              <option value="unexplored">Unexplored only</option>
+              <option value="known">Known breaks only</option>
+            </select>
+          </label>
+          <label>Wave size
+            <select id="f-size">
+              <option value="small">Small (knee–waist)</option>
+              <option value="fun" selected>Fun (waist–overhead)</option>
+              <option value="overhead">Overhead</option>
+              <option value="big">Big wave</option>
+            </select>
+          </label>
+          <label>Region
+            <select id="f-region"><option value="">All regions</option></select>
+          </label>
+          <label>Units
+            <select id="f-units">
+              <option value="ft" selected>Feet</option>
+              <option value="m">Metres</option>
+            </select>
+          </label>
+        </div>
+        <div id="status" class="status" role="status">Loading spots…</div>
+      </section>
+
+      <section id="list-view" class="view">
+        <h2 id="list-title" class="view-title">Top spots</h2>
+        <ol id="spot-list" class="spot-list"></ol>
+      </section>
+
+      <section id="detail-view" class="view" hidden>
+        <button id="back" class="back">‹ All spots</button>
+        <div id="detail"></div>
+      </section>
+
+      <footer class="foot">
+        <details>
+          <summary>How this works &amp; surf respectfully</summary>
+          <p>Every dot is a stretch of coast found in NOAA seafloor depth data (ETOPO 2022). For each one we worked out which swell directions can physically reach it past islands and headlands, which way it faces, and how the seafloor shoals. Live swell and wind (Open-Meteo) are scored against that geography, hour by hour.</p>
+          <p>Scores are a <strong>model</strong>, not a surf report: the depth grid is ~450 m, so it can&rsquo;t see individual reefs, rocks or sandbars, and in parts of BC a dot can sit a few hundred metres off the real shoreline. Use the satellite view to scout, and expect plenty of misses.</p>
+          <p>Much of this coast is the territory of First Nations, including reserve land and sites that need permission to visit. Find out whose land you're on before you go. Many spots are hours from help, in cold water with no cell service, so go with a partner and tell someone your plan.</p>
+          <p>Data: Open-Meteo, NOAA ETOPO 2022, Fisheries and Oceans Canada, NOAA CO-OPS. Imagery: Esri.</p>
+        </details>
+      </footer>
+    </aside>
+
+    <main id="map" aria-label="Map of candidate surf spots"></main>
+    <div id="legend" class="legend" aria-hidden="true">
+      <span>Score</span>
+      <i style="--c: var(--s0)"></i><i style="--c: var(--s2)"></i><i style="--c: var(--s4)"></i><i style="--c: var(--s6)"></i><i style="--c: var(--s8)"></i>
+      <span>firing</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

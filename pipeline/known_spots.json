@@ -1,0 +1,30 @@
+{
+  "_note": "Publicly well-known surf spots, used only to tag nearby candidates as 'known' instead of 'unexplored'. Coordinates are approximate (within ~1 km). Add or correct entries freely; rerun the pipeline afterwards.",
+  "spots": [
+    { "name": "Chesterman Beach", "lat": 49.118, "lon": -125.892, "region": "Tofino" },
+    { "name": "Cox Bay", "lat": 49.100, "lon": -125.875, "region": "Tofino" },
+    { "name": "Mackenzie Beach", "lat": 49.130, "lon": -125.905, "region": "Tofino" },
+    { "name": "Long Beach / Incinerator Rock", "lat": 49.048, "lon": -125.752, "region": "Pacific Rim" },
+    { "name": "Wickaninnish Beach", "lat": 49.013, "lon": -125.665, "region": "Pacific Rim" },
+    { "name": "Florencia Bay", "lat": 48.983, "lon": -125.625, "region": "Ucluelet" },
+    { "name": "Wya Point", "lat": 48.955, "lon": -125.605, "region": "Ucluelet" },
+    { "name": "Ahous Bay (Vargas Island)", "lat": 49.190, "lon": -126.020, "region": "Clayoquot Sound" },
+    { "name": "Pachena Bay", "lat": 48.785, "lon": -125.120, "region": "Bamfield" },
+    { "name": "Raft Cove", "lat": 50.590, "lon": -128.250, "region": "North Island" },
+    { "name": "San Josef Bay", "lat": 50.660, "lon": -128.290, "region": "North Island" },
+    { "name": "Nels Bight", "lat": 50.780, "lon": -128.390, "region": "Cape Scott" },
+    { "name": "Sombrio Beach", "lat": 48.500, "lon": -124.300, "region": "Juan de Fuca" },
+    { "name": "Jordan River", "lat": 48.420, "lon": -124.050, "region": "Juan de Fuca" },
+    { "name": "North Beach (Tow Hill)", "lat": 54.060, "lon": -131.800, "region": "Haida Gwaii" },
+    { "name": "Crescent Bay", "lat": 48.163, "lon": -123.705, "region": "Strait of Juan de Fuca (WA)" },
+    { "name": "Hobuck Beach", "lat": 48.340, "lon": -124.680, "region": "Neah Bay" },
+    { "name": "Shi Shi Beach", "lat": 48.280, "lon": -124.680, "region": "Olympic Coast" },
+    { "name": "First Beach, La Push", "lat": 47.903, "lon": -124.640, "region": "Olympic Coast" },
+    { "name": "Kalaloch", "lat": 47.605, "lon": -124.375, "region": "Olympic Coast" },
+    { "name": "Moclips / Pacific Beach", "lat": 47.200, "lon": -124.210, "region": "SW Washington" },
+    { "name": "Ocean Shores", "lat": 46.970, "lon": -124.170, "region": "SW Washington" },
+    { "name": "Westport (The Groins)", "lat": 46.905, "lon": -124.110, "region": "SW Washington" },
+    { "name": "Long Beach, WA", "lat": 46.350, "lon": -124.065, "region": "SW Washington" },
+    { "name": "Waikiki Beach (Cape Disappointment)", "lat": 46.282, "lon": -124.058, "region": "SW Washington" }
+  ]
+}
