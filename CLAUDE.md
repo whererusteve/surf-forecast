@@ -10,6 +10,10 @@ The owner (Steve) is a writer and content person, not primarily a coder. He hand
 - Keep forecast points (`forecastPoints` in spots.json) around 200 or fewer. Each costs one Open-Meteo call per API per page load (limit 600/min). Tune `FORECAST_GRID_DEG` in the pipeline.
 - Spot IDs (`PNW-0001`…) are reassigned on every pipeline run. Don't rely on them being stable across rebuilds.
 
+## Hosting
+
+GitHub Pages deploys from the `main` branch root (classic branch mode, not Actions). Root `index.html` redirects to `app/`; `.nojekyll` stops Jekyll processing. `.github/workflows/tests.yml` only runs tests.
+
 ## Testing in a headless browser
 
 The DFO tide API (BC) returns HTTP 500 to `HeadlessChrome` user agents, so BC tides fail in Playwright but work in real browsers. Test tides with a Washington spot (NOAA) instead. Don't spoof the user agent.

@@ -68,7 +68,7 @@ The tests check the scoring rules: offshore beats onshore wind, blocked swell sc
 
 ## Put it online (GitHub Pages)
 
-The repo includes a workflow (`.github/workflows/pages.yml`) that publishes the `app/` folder for free. One-time setup: on GitHub, go to **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**. After that, every push to `main` updates the site at `https://whererusteve.github.io/surf-forecast/`.
+The site is live at **https://whererusteve.github.io/surf-forecast/**. GitHub Pages publishes it straight from the `main` branch (Settings → Pages → Source: "Deploy from a branch", branch `main`, folder `/ (root)`). The small `index.html` at the top of the repo forwards visitors into `app/`, where the real app lives. Every push to `main` updates the site within a couple of minutes.
 
 ## What's where
 

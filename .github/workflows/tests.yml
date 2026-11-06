@@ -1,0 +1,17 @@
+# Runs the scoring-model tests on every push, so a broken change shows a red X on GitHub.
+# (The website itself is published by GitHub Pages straight from the main branch.)
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
