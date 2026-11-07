@@ -176,14 +176,39 @@ function select(z) {
 
 // --- Loading ----------------------------------------------------------------
 
+// One status message over the map, so a slow phone connection or an error is never silent
+function status(msg, isError = false) {
+  const el = $("status");
+  el.hidden = !msg;
+  el.textContent = msg || "";
+  el.classList.toggle("error", isError);
+}
+
+const pending = new Map();   // region id -> fetch already under way
+
+function fetchRegion(id) {
+  if (!pending.has(id)) {
+    pending.set(id, fetch(`data/zones-${id}.json`).then((res) => {
+      if (!res.ok) throw new Error(`the zone file answered HTTP ${res.status}`);
+      return res.json();
+    }).catch((err) => { pending.delete(id); throw err; }));
+  }
+  return pending.get(id);
+}
+
 async function loadRegion(id) {
-  $("count").textContent = "Loading zones…";
-  const res = await fetch(`data/zones-${id}.json`);
-  state.data = await res.json();
+  status("Loading zones… (about 1 MB, can take a few seconds on mobile data)");
+  try {
+    state.data = await fetchRegion(id);
+  } catch (err) {
+    status(`Couldn't load the zones: ${err.message}. Check your connection and reload the page.`, true);
+    return;
+  }
   const b = state.data.bbox;
   map.fitBounds([[b.lat_min, b.lon_min], [b.lat_max, b.lon_max]]);
   $("detail").hidden = true;
   draw();
+  status("");
   try { localStorage.setItem("snowPreview.region", id); } catch { /* private mode */ }
 }
 
@@ -203,6 +228,7 @@ async function init() {
   });
   $("filtersDone").addEventListener("click", () => { $("filters").hidden = true; $("filtersBtn").setAttribute("aria-expanded", "false"); });
   $("closeDetail").addEventListener("click", () => { $("detail").hidden = true; });
+  fetchRegion(first).catch(() => {});   // start downloading while the disclaimer is read
   await showDisclaimer();
   await loadRegion(first);
 }
@@ -229,6 +255,6 @@ async function showDisclaimer() {
 }
 
 init().catch((err) => {
-  $("count").textContent = `Couldn't load the zones: ${err.message}`;
+  status(`Something went wrong loading the page: ${err.message}. Try reloading.`, true);
   console.error(err);
 });
