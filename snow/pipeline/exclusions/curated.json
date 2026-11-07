@@ -1,0 +1,5 @@
+{
+  "_about": "Areas Steve has removed in the app's curation mode (?curate=1). Shapes only, no reasons: the private notes stay in Steve's own list. The pipeline drops these areas for everyone on the next rebuild. Coordinates are [lon, lat].",
+  "version": 1,
+  "shapes": []
+}

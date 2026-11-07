@@ -1,0 +1,74 @@
+{
+  "_about": "Hand-curated access facts the open data doesn't cover. Every entry with \"verify\": true needs Steve (or someone who rides there) to check it. Coordinates marked \"snap\" are moved to the highest point within 1.5 km (for lift tops) or the nearest road cell (for trailheads) when the pipeline runs.",
+
+  "liftGates": [
+    {
+      "name": "Blackcomb Glacier backcountry gate (Spearhead Traverse start)",
+      "region": "sea-to-sky",
+      "lat": 50.093, "lon": -122.892, "snap": "peak",
+      "resort": "Whistler Blackcomb",
+      "rideHours": 1.0,
+      "note": "Lift ticket or pass needed, and the resort's backcountry access rules apply. Ride time from the village is an estimate.",
+      "url": "https://www.whistlerblackcomb.com/",
+      "verify": true
+    },
+    {
+      "name": "Whistler Peak (Musical Bumps / Flute access)",
+      "region": "sea-to-sky",
+      "lat": 50.059, "lon": -122.949, "snap": "peak",
+      "resort": "Whistler Blackcomb",
+      "rideHours": 1.0,
+      "note": "Lift ticket or pass needed, and the resort's backcountry access rules apply. Ride time from the village is an estimate.",
+      "url": "https://www.whistlerblackcomb.com/",
+      "verify": true
+    }
+  ],
+
+  "trailheads": [
+    {
+      "name": "Mt Baker Ski Area upper lot (Heather Meadows)",
+      "region": "north-cascades",
+      "lat": 48.8617, "lon": -121.6789,
+      "note": "Winter road ends here. Backcountry starts at the ski area boundary; the ski area itself is excluded.",
+      "verify": true
+    }
+  ],
+
+  "winterRoadClosures": [
+    {
+      "name": "SR 20 North Cascades Highway winter closure (approx. Ross Dam trailhead MP 134 to Silver Star gate MP 171)",
+      "region": "north-cascades",
+      "bbox": [-121.07, 48.45, -120.46, 48.75],
+      "note": "Closed to cars roughly November to April. Washington Pass and Rainy Pass are a long trip from the gates in winter.",
+      "url": "https://wsdot.wa.gov/travel/roads-bridges/mountain-passes/north-cascades-highway-sr-20",
+      "verify": true
+    },
+    {
+      "name": "Mt Baker Highway beyond the ski area (road to Artist Point)",
+      "region": "north-cascades",
+      "bbox": [-121.676, 48.84, -121.66, 48.87],
+      "note": "Not plowed past the upper ski area lot in winter.",
+      "verify": true
+    }
+  ],
+
+  "usResortBboxes": [
+    {"name": "Mt Baker Ski Area", "bbox": [-121.70, 48.84, -121.64, 48.88]},
+    {"name": "Stevens Pass", "bbox": [-121.13, 47.72, -121.05, 47.77]},
+    {"name": "Leavenworth Ski Hill", "bbox": [-120.69, 47.60, -120.65, 47.62]},
+    {"name": "Schweitzer", "bbox": [-116.68, 48.33, -116.56, 48.40]}
+  ],
+
+  "permitsAndClosures": [
+    {
+      "name": "Kootenay Pass (Highway 3) avalanche control",
+      "region": "south-selkirks",
+      "bbox": [-117.15, 48.98, -116.95, 49.12],
+      "text": "Highway 3 over Kootenay Pass closes for avalanche control, sometimes with little notice, and parking and skiing near the highway can be restricted during control work. Check DriveBC before you go.",
+      "url": "https://www.drivebc.ca/",
+      "verify": true
+    }
+  ],
+
+  "heli": []
+}
