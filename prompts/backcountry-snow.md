@@ -237,9 +237,9 @@ Already decided:
 - **Email address:** later. Remind him at every hand-over.
 
 Still to ask, when it comes up:
-1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly?
-2. The phase 1b list of BC regions, once the usage data suggests one.
-3. Steve's disclaimer and acknowledgement wording (he writes these).
+1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
+2. The phase 1b list of BC regions, once the usage data suggests one. [STEVE's ANSWER: Sea to sky, duffey lake, coquihalla, rogers' pass, rocky mountains, babine mountains, terrace area, stikine, dease lake, stewart]
+3. Steve's disclaimer and acknowledgement wording (he writes these). [Disclaimer: This is for informational purposes only. Use your educated judgment. Never rely on this info for decision making, use your brain and experience to make those. If you don't have either, find someone who does and pay them with time, money, or favours.] [These are sacred lands to the first nations. Don't be a dick. Show respect. They have been in charge of these lands for far longer than Western society so show some gratitude that they didn't trash it over 10,000 years.]
 
 ## 10. Definition of done for iteration 1
 
