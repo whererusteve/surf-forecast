@@ -57,6 +57,7 @@ BELOW_TREELINE_M = 500  # zones topping out this far below the forest line are l
 MAX_HOURS = 14          # zones further than this one way are left out
 CURATED_DROP_FRAC = 0.3 # a curated shape covering this much of a zone removes it
 COARSE = 3              # routing grid = 3 x 3 cells (~90 m)
+ALPHA_DEG = 25          # "could an avalanche reach here" angle up to steep terrain (simple alpha-angle rule)
 MAX_FP = 66             # forecast points per region (x 3 elevation bands <= ~200 calls)
 SIMPLIFY_DEG = 0.0004   # polygon simplification for the web (~30-40 m)
 
@@ -378,7 +379,12 @@ def build(rid):
     dy_c = grid.dy * k
     dx_c = T.coarsen(np.broadcast_to(grid.dx_row[:, None], grid.shape), k)[:, 0] * k
     ctrans = grid.transform * Affine.scale(k, k)
-    exposed = T.avalanche_exposure(zc, s30 > 0.4, dy_c, dx_c)
+    # Start zones: mostly-steep cells in patches of at least ~4 ha (5 coarse cells)
+    steep = s30 > 0.6
+    lab_s, n_s = ndimage.label(steep)
+    big = np.bincount(lab_s.ravel()) >= 5
+    big[0] = False
+    exposed = T.avalanche_exposure(zc, big[lab_s], dy_c, dx_c, alpha_deg=ALPHA_DEG, max_m=1200)
     shelter = T.wind_shelter(zc, dy_c, dx_c)
     log(f"coarse grids ready ({time.time() - t0:.0f} s)")
 
@@ -572,7 +578,7 @@ def build(rid):
                 "OpenStreetMap contributors (ohsome, GPS traces); Avalanche Canada Mountain Information Network",
         bbox=bb, centres=region["avalanche_centres"],
         settings=dict(munterUp=A.MUNTER_UP, munterDown=A.MUNTER_DOWN, sledKmh=A.SLED_KMH,
-                      multiDayH=A.MULTI_DAY_H, alphaDeg=22),
+                      multiDayH=A.MULTI_DAY_H, alphaDeg=ALPHA_DEG),
         bandsNote=("Elevation bands as published by the avalanche centre: " + "; ".join(official)) if official else
                   "Elevation bands estimated from where forest gives way to open terrain (ESA WorldCover), "
                   "calibrated against the bands US avalanche centres publish.",
@@ -613,7 +619,8 @@ def encode_ring(ring, lat, lon):
 
 
 def exposed_flag(leg):
-    return bool(leg["max_exposed_run"] >= 3 or leg["exposed_cells"] >= 6)
+    """Flag an approach that spends a real stretch (~360 m or more) on or under avalanche terrain."""
+    return bool(leg["max_exposed_run"] >= 4 or leg["exposed_cells"] >= 8)
 
 
 def nearest_gate(gates, target, pred, router):

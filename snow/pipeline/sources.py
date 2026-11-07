@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import os
 import time
 import urllib.parse
 import urllib.request
@@ -355,7 +356,9 @@ def ohsome_route_grid(bbox, filt="piste:type=skitour or route=ski", coarse_km=2.
             time.sleep(2)  # gentle on a free public service
 
     coarse = squares(x0, y0, x1, y1, coarse_km)
-    if any(",".join(map(str, b)) not in store for b in coarse):
+    if os.environ.get("SNOW_SAVED_ROUTES_ONLY"):
+        complete = not any(",".join(map(str, b)) not in store for b in coarse)
+    elif any(",".join(map(str, b)) not in store for b in coarse):
         try:  # quick check before sending big requests
             http("https://api.ohsome.org/v1/metadata", timeout=30, tries=1)
         except RuntimeError:
