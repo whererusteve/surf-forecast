@@ -70,3 +70,48 @@ export function accessSummary(mode, a, rideH = 0) {
 export const USE_LABELS = ["little sign of travel", "occasional", "well-travelled"];
 export const BAND_LABELS = ["Below treeline", "Treeline", "Alpine"];
 export const SLOPE_CLASSES = ["under 30°", "30–35°", "35–45°", "over 45°"];
+
+// --- Choosing and describing access ---------------------------------------
+
+/** Fixed (non-skinning) hours in an access option: the sled ride or the lift ride. */
+export function fixedHours(mode, a, gates = []) {
+  if (mode === "sled") return a.sledH || 0;
+  if (mode === "lift") return (gates[a.gate] && gates[a.gate].rideHours) || 0;
+  return 0;
+}
+
+/**
+ * The quickest allowed way to reach a zone, at the chosen skinning pace.
+ * Returns { mode, h } or null if no allowed mode gets there within maxH hours.
+ */
+export function bestAccess(zone, { modes = ["skin", "sled", "lift"], maxH = Infinity, rate = MUNTER_DEFAULT, gates = [] } = {}) {
+  let best = null;
+  for (const [mode, a] of Object.entries(zone.acc || {})) {
+    if (!modes.includes(mode)) continue;
+    const h = rescaleHours(a.h, fixedHours(mode, a, gates), rate);
+    if (h <= maxH && (!best || h < best.h)) best = { mode, h };
+  }
+  return best;
+}
+
+export const COMPASS8 = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+
+/** Which way a slope faces, e.g. 350 -> "N". */
+export function aspectName(deg) {
+  return COMPASS8[Math.round((((deg % 360) + 360) % 360) / 45) % 8];
+}
+
+/**
+ * Wind digits from the pipeline (8 characters, wind FROM N, NE, ... NW, 0-9)
+ * -> { strong: ["SW", "W"], some: ["S"] }.
+ */
+export function windDirs(digits = "") {
+  const strong = [];
+  const some = [];
+  [...digits].forEach((d, i) => {
+    const v = Number(d);
+    if (v >= 6) strong.push(COMPASS8[i]);
+    else if (v >= 3) some.push(COMPASS8[i]);
+  });
+  return { strong, some };
+}

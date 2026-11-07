@@ -32,3 +32,30 @@ test("access summary names the legs", () => {
   const l = accessSummary("lift", { h: 2.2, km: 3, up: 400 }, 1);
   assert.match(l, /^Lifts \(~1 h\), then skin 3 km and 400 m up, ~1 h 15 min\./);
 });
+
+import { bestAccess, aspectName, windDirs } from "../../snow/js/zones.js";
+
+const zone = { acc: {
+  skin: { h: 4, km: 8, up: 1000 },
+  sled: { h: 2, sledH: 1, sledKm: 20, km: 2, up: 400 },
+  lift: { h: 2.5, gate: 0, km: 3, up: 200 },
+} };
+const gates = [{ rideHours: 1 }];
+
+test("best access picks the quickest allowed mode within the time limit", () => {
+  assert.deepEqual(bestAccess(zone, { gates }), { mode: "sled", h: 2 });
+  assert.deepEqual(bestAccess(zone, { modes: ["skin"], gates }), { mode: "skin", h: 4 });
+  assert.equal(bestAccess(zone, { modes: ["skin"], maxH: 3, gates }), null);
+});
+
+test("a slower pace can change which mode is quickest", () => {
+  // at 2 units/h: skin 8 h, sled 1 + 2 = 3 h, lift 1 + 3 = 4 h
+  assert.deepEqual(bestAccess(zone, { rate: 2, gates }), { mode: "sled", h: 3 });
+  assert.deepEqual(bestAccess(zone, { modes: ["skin", "lift"], rate: 2, gates }), { mode: "lift", h: 4 });
+});
+
+test("aspects and wind directions read as compass points", () => {
+  assert.equal(aspectName(350), "N");
+  assert.equal(aspectName(225), "SW");
+  assert.deepEqual(windDirs("00136910"), { strong: ["S", "SW"], some: ["SE"] });
+});

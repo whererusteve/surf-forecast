@@ -138,6 +138,10 @@ assumed to be avalanche-trained.
 
 What exists so far:
 
+- **Zone preview** (`snow/index.html`): a view-only map of the zones, with travel time,
+  use level, slope mix, wind exposure and the areas to respect. No forecasts yet. Steve's
+  disclaimer (`snow/content/disclaimer.json`) must be accepted first.
+
 - **Zone discovery** (`snow/pipeline/build_zones.py`): cuts the terrain of
   Sea-to-Sky, the North Cascades and the southern Selkirks into zones (one
   elevation band and aspect each) and works out each zone's slope-angle mix,

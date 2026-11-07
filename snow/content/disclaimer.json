@@ -1,0 +1,13 @@
+{
+  "_about": "Steve's wording. Shown before anyone sees the map or any scores. Bump 'version' whenever the wording changes, so everyone sees it again and accepts it fresh.",
+  "version": 1,
+  "title": "Before you look",
+  "paragraph": "This is for informational purposes only. Use your educated judgment. Never rely on this info for decision making, use your brain and experience to make those. If you don't have either, find someone who does and pay them with time, money, or favours.",
+  "bullets": [
+    "You're assumed to have avalanche training (AST 1 or equivalent).",
+    "Read the official avalanche bulletin first. It outranks anything here.",
+    "The model can't see buried weak layers, slab structure, cornices, glide cracks or local wind effects."
+  ],
+  "bulletsNote": "[Placeholder bullets for Steve to rewrite]",
+  "accept": "I understand"
+}

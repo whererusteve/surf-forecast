@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snow Finder Zone Preview</title>
+  <meta name="description" content="Preview of the Backcountry Snow Finder's terrain zones: slope angles, travel times by legal access, use levels and the areas to respect. No snow or avalanche forecast yet.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/preview.css">
+</head>
+<body>
+  <header id="bar">
+    <div class="title">
+      <strong>Snow Finder</strong>
+      <span class="tag">Zone preview</span>
+    </div>
+    <div class="controls">
+      <select id="region" aria-label="Region"></select>
+      <select id="colour" aria-label="Colour zones by">
+          <option value="use">Colour: use level</option>
+          <option value="time">Colour: travel time</option>
+          <option value="steep">Colour: steep terrain</option>
+          <option value="band">Colour: elevation band</option>
+        </select>
+      <button id="filtersBtn" type="button" aria-expanded="false">Filters</button>
+    </div>
+  </header>
+
+  <div id="notice" role="note">
+    <b>Preview: terrain and access only.</b> No snow forecast or avalanche danger yet, so don't plan a trip with it.
+    Danger ratings: <a href="https://avalanche.ca/" target="_blank" rel="noopener">Avalanche Canada</a> ·
+    <a href="https://nwac.us/" target="_blank" rel="noopener">NWAC</a> ·
+    <a href="https://www.idahopanhandleavalanche.org/" target="_blank" rel="noopener">IPAC</a>
+  </div>
+
+
+  <main>
+    <div id="map"></div>
+    <section id="filters" hidden>
+      <fieldset>
+        <legend>Getting there</legend>
+        <label>Max one-way time
+          <select id="maxH">
+            <option value="99">Any</option>
+            <option value="2">2 h</option>
+            <option value="3">3 h</option>
+            <option value="5" selected>5 h (day trip)</option>
+            <option value="8">8 h</option>
+          </select>
+        </label>
+        <label><input type="checkbox" class="mode" value="skin" checked> Skin from the road</label>
+        <label><input type="checkbox" class="mode" value="sled" checked> Sled, then skin</label>
+        <label><input type="checkbox" class="mode" value="lift" checked> Lift-assisted</label>
+        <label>Skinning pace
+          <select id="pace">
+            <option value="3">Slower (3 units/h)</option>
+            <option value="4" selected>Average (4 units/h, Munter default)</option>
+            <option value="5">Faster (5 units/h)</option>
+          </select>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Show</legend>
+        <label><input type="checkbox" class="use" value="2" checked> Well-travelled</label>
+        <label><input type="checkbox" class="use" value="1" checked> Occasional</label>
+        <label><input type="checkbox" class="use" value="0" checked> Little sign of travel</label>
+        <label><input type="checkbox" id="showAreas" checked> Heli tenures, cultural areas, closed areas</label>
+      </fieldset>
+      <p class="small" id="count"></p>
+      <button id="filtersDone" type="button">Done</button>
+    </section>
+    <div id="legend"></div>
+    <aside id="detail" hidden>
+      <button id="closeDetail" type="button" aria-label="Close">×</button>
+      <div id="detailBody"></div>
+    </aside>
+  </main>
+
+
+  <dialog id="disclaimer">
+    <h2 id="dTitle"></h2>
+    <p id="dPara"></p>
+    <ul id="dList"></ul>
+    <p class="small" id="dNote"></p>
+    <button id="dAccept" type="button"></button>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <script type="module" src="js/preview.js"></script>
+</body>
+</html>
