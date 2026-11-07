@@ -128,3 +128,24 @@ tests/                    automated tests for the scoring model
 ## Surf respectfully
 
 Much of this coast is the territory of First Nations, including reserve land and places that need permission to visit (Makah lands around Neah Bay need a recreation permit, for example). Find out whose land you're on before you go. Many candidates are hours from help, in cold water with no cell service: go with a partner, carry communication, and tell someone your plan. And think twice before posting exact coordinates of a fragile spot.
+
+## Backcountry Snow Finder (in progress, `snow/`)
+
+A companion to the surf app for mountains: it uses weather forecasts and terrain
+data to suggest where the snow should be good, always beside the official avalanche
+danger rating, never blended with it. Built for Alpine Islands members, who are
+assumed to be avalanche-trained.
+
+What exists so far:
+
+- **Zone discovery** (`snow/pipeline/build_zones.py`): cuts the terrain of
+  Sea-to-Sky, the North Cascades and the southern Selkirks into zones (one
+  elevation band and aspect each) and works out each zone's slope-angle mix,
+  forest cover, which winds load or scour it, estimated travel time by legal
+  access mode (Munter method for skinning), and how much it is travelled
+  according to open data.
+- **What is left out and why:** `snow/pipeline/exclusions/README.md`.
+- **Data sources and their terms:** `snow/SOURCES.md`.
+
+Still to come: the avalanche forecast panel, the snow quality model, the app
+itself, field reports, curation mode and the Alpine Islands page.

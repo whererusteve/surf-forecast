@@ -115,6 +115,43 @@ def gather_exclusions(rid, region, b):
     return out
 
 
+FT = 0.3048
+
+
+def official_bands(region, grid, t_lo, t_hi):
+    """Where a US avalanche centre publishes its elevation bands, use them exactly.
+
+    NWAC and IPAC give each forecast zone a middle band in feet (e.g. "5500-4500ft").
+    Zones are then banded the same way as the danger rating shown beside them.
+    Updates t_lo / t_hi in place; returns the zone names used.
+    """
+    if "US" not in region["country"]:
+        return []
+    used = []
+    for cid in region["avalanche_centres"]:
+        if cid == "avcan":
+            continue
+        cfg = S.cached_json("avalanche", f"aorg-centre-{cid}", lambda cid=cid: json.loads(
+            S.http(f"https://api.avalanche.org/v2/public/avalanche-center/{cid}")))
+        geoms = {f["id"]: shape(f["geometry"]) for f in S.aorg_zones()["features"]
+                 if f["properties"]["center_id"] == cid}
+        for zcfg in cfg.get("zones", []):
+            mid = ((zcfg.get("config") or {}).get("elevation_band_names") or {}).get("middle", "")
+            nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]{2,}", mid)]
+            g = geoms.get(int(zcfg["id"])) or geoms.get(zcfg["id"])
+            if len(nums) < 2 or g is None:
+                continue
+            lo, hi = min(nums) * FT, max(nums) * FT
+            m = features.rasterize([(g, 1)], out_shape=grid.shape, transform=grid.transform, fill=0,
+                                   dtype="uint8").astype(bool)
+            if m.any():
+                t_lo[m], t_hi[m] = lo, hi
+                used.append(f"{cid} {zcfg['name']}: {lo:.0f}-{hi:.0f} m")
+    for u in used:
+        log("  official bands:", u)
+    return used
+
+
 def cultural_mgmt_areas(region, b):
     if "CA" not in region["country"]:
         return []
@@ -286,6 +323,7 @@ def build(rid):
     tree, cls = T.load_cover(S.worldcover_files(region), grid)
     slope, aspect, aspect_s, lap = T.derivatives(z, grid)
     t_lo, t_hi = T.treeline(z, slope, tree, cls, grid)
+    official = official_bands(region, grid, t_lo, t_hi)
     band = T.bands(z, t_lo, t_hi)
     log(f"terrain ready ({time.time() - t0:.0f} s), grid {grid.H} x {grid.W}")
 
@@ -449,7 +487,7 @@ def build(rid):
 
     # --- use level from open data ---
     lat_c, lon_c = grid.latlon(st["row"], st["col"])
-    use = usage(rid, region, b, lab, n, grid, polys)
+    use = usage(rid, region, b, lab, n, grid)
     log(f"usage done ({time.time() - t0:.0f} s)")
 
     cma = cultural_mgmt_areas(region, b)
@@ -535,7 +573,9 @@ def build(rid):
         bbox=bb, centres=region["avalanche_centres"],
         settings=dict(munterUp=A.MUNTER_UP, munterDown=A.MUNTER_DOWN, sledKmh=A.SLED_KMH,
                       multiDayH=A.MULTI_DAY_H, alphaDeg=22),
-        bandsNote="Elevation bands estimated from where forest gives way to open terrain (ESA WorldCover).",
+        bandsNote=("Elevation bands as published by the avalanche centre: " + "; ".join(official)) if official else
+                  "Elevation bands estimated from where forest gives way to open terrain (ESA WorldCover), "
+                  "calibrated against the bands US avalanche centres publish.",
         forecastPoints=fpoints,
         gates=[dict(name=g["name"], resort=g["resort"], note=g["note"], url=g["url"], rideHours=g["rideHours"])
                for g, _ in gates],
@@ -651,7 +691,7 @@ def nearest_names(region, b):
     return f
 
 
-def usage(rid, region, b, lab, n, grid, polys):
+def usage(rid, region, b, lab, n, grid):
     """How much each zone is travelled, from aggregated open data only."""
     def window_labels(lats, lons, r):
         i, j = grid.cell(np.asarray(lats), np.asarray(lons))
@@ -687,16 +727,25 @@ def usage(rid, region, b, lab, n, grid, polys):
                         pairs.add((int(zz), int(t)))
         for zz, _ in pairs:
             gps_n[zz] += 1
-    # Mapped ski-touring routes (OpenStreetMap) inside the zone, buffered ~100 m
-    rings = []
-    for zid, ring in polys.items():
-        p = Polygon(ring).buffer(0.0012).simplify(0.0005)
-        if p.geom_type == "Polygon":
-            rings.append((zid, [[round(x, 4), round(y, 4)] for x, y in p.exterior.coords]))
-    lengths = S.ohsome_route_length(rings)
+    # Mapped ski-touring routes (OpenStreetMap): metres of route in 500 m squares,
+    # credited to every zone that covers a good part of the square
+    cells, complete = S.ohsome_route_grid(b)
     route_m = np.zeros(n + 1)
-    for zid, v in lengths.items():
-        route_m[int(zid)] = v
+    for lon0, lat0, lon1, lat1, metres in cells:
+        i1, j0 = grid.cell(lat0, lon0)
+        i0, j1 = grid.cell(lat1, lon1)
+        i0, i1 = max(0, int(i0)), min(grid.H, int(i1) + 1)
+        j0, j1 = max(0, int(j0)), min(grid.W, int(j1) + 1)
+        if i0 >= i1 or j0 >= j1:
+            continue
+        sub = lab[i0:i1, j0:j1]
+        cnt = np.bincount(sub.ravel(), minlength=n + 1)
+        share = cnt / sub.size
+        hit = np.nonzero(share >= 0.15)[0]
+        hit = hit[hit > 0]
+        route_m[hit] += metres
+    if not complete:
+        log("  WARNING: ski-route data incomplete (ohsome unavailable); use levels may be too low")
     level, detail = {}, {}
     for zid in range(1, n + 1):
         r_, m_, g_ = route_m[zid], min_n[zid], gps_n[zid]
@@ -716,6 +765,11 @@ STOP = re.compile(r"\b(obs|observation|observations|report|conditions|tour|trip|
                   r"jan|feb|mar|apr|may|nov|dec|\d+)\b")
 
 
+# Titles about people, courses or events rather than places
+NOT_PLACE = re.compile(r"\b(ast|course|exercise|class|group|crew|shreds|damage|assessment|lightning|"
+                       r"rescue|incident|accident|test|practice|my|our|we)\b")
+
+
 def write_known_zones(rid, region, b, zones):
     """Suggest named, known zones from places that several MIN reports name."""
     titles = S.min_titles(b)
@@ -723,7 +777,7 @@ def write_known_zones(rid, region, b, zones):
     for la, lo, t in titles:
         key = STOP.sub(" ", re.sub(r"[^a-z0-9' ]", " ", t.lower()))
         key = " ".join(key.split())
-        if len(key) >= 4:
+        if len(key) >= 4 and not NOT_PLACE.search(key):
             groups[key].append((la, lo))
     path = HERE / "known_zones.json"
     data = json.loads(path.read_text()) if path.exists() else {"_about": "", "zones": {}}

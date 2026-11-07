@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import time
 import urllib.parse
 import urllib.request
@@ -302,44 +303,75 @@ def gps_winter_points(bbox, max_pages=12):
     return pts
 
 
-def ohsome_route_length(polygons, filt="piste:type=skitour or route=ski"):
-    """Metres of mapped ski-touring route inside each polygon (OSM data via ohsome).
+OHSOME_BATCH = 25
 
-    `polygons` is a list of (id, [[lon, lat], ...]) outer rings. Results are cached
-    per polygon shape, so a rebuild only asks about zones whose outline changed.
-    A batch the server rejects is split in half and retried; a single polygon it
-    still can't handle counts as 0 m (and is reported).
+
+def ohsome_route_grid(bbox, filt="piste:type=skitour or route=ski", coarse_km=2.0, fine_km=0.5):
+    """Metres of mapped ski-touring route in grid squares (OSM data via ohsome).
+
+    Two passes: 2 km squares over the whole region, then 500 m squares inside any
+    2 km square that has a route. Squares sit on a fixed grid, so the answers are
+    cached for good and rebuilding zones never needs to ask again.
+    Returns (cells, complete): cells is a list of [lon0, lat0, lon1, lat1, metres]
+    for 500 m squares with routes; complete is False if ohsome couldn't answer
+    for part of the region.
     """
-    store_p = CACHE / "ohsome" / ("lengths-" + hashlib.sha1(filt.encode()).hexdigest()[:8] + ".json")
+    x0, y0, x1, y1 = bbox
+    store_p = CACHE / "ohsome" / ("grid-" + hashlib.sha1(filt.encode()).hexdigest()[:8] + ".json")
     store_p.parent.mkdir(parents=True, exist_ok=True)
     store = json.loads(store_p.read_text()) if store_p.exists() else {}
-    keyed = [(pid, ring, hashlib.sha1(json.dumps(ring).encode()).hexdigest()[:20]) for pid, ring in polygons]
-    todo = [(h, ring) for _, ring, h in keyed if h not in store]
-    failed = []
+    complete = True
 
-    def query(chunk):
-        fc = {"type": "FeatureCollection", "features": [
-            {"type": "Feature", "id": h, "properties": {"id": h},
-             "geometry": {"type": "Polygon", "coordinates": [ring]}} for h, ring in chunk]}
-        try:
-            d = json.loads(http("https://api.ohsome.org/v1/elements/length/groupBy/boundary",
-                                data={"bpolys": json.dumps(fc), "filter": filt}, timeout=600, tries=2))
+    def squares(xa, ya, xb, yb, km):
+        dlat = km / 111.2
+        out = []
+        lat = math.floor(ya / dlat) * dlat
+        while lat < yb:
+            dlon = km / (111.2 * math.cos(math.radians(lat + dlat / 2)))
+            lon = math.floor(xa / dlon) * dlon
+            while lon < xb:
+                out.append((round(lon, 5), round(lat, 5), round(lon + dlon, 5), round(lat + dlat, 5)))
+                lon += dlon
+            lat += dlat
+        return out
+
+    def ask(boxes):
+        nonlocal complete
+        todo = [b for b in boxes if ",".join(map(str, b)) not in store]
+        for i in range(0, len(todo), OHSOME_BATCH):
+            chunk = todo[i:i + OHSOME_BATCH]
+            q = "|".join(f"{k}:{b[0]},{b[1]},{b[2]},{b[3]}" for k, b in enumerate(chunk))
+            try:
+                d = json.loads(http("https://api.ohsome.org/v1/elements/length/groupBy/boundary",
+                                    data={"bboxes": q, "filter": filt}, timeout=180, tries=2))
+            except RuntimeError as err:
+                print(f"    ohsome unavailable ({str(err)[-60:]}); route data incomplete", flush=True)
+                complete = False
+                return
+            for g in d["groupByResult"]:
+                store[",".join(map(str, chunk[int(g["groupByObject"])]))] = g["result"][-1]["value"]
+            store_p.write_text(json.dumps(store))
+            print(f"    ski-route squares: {min(i + OHSOME_BATCH, len(todo))}/{len(todo)}", flush=True)
+            time.sleep(2)  # gentle on a free public service
+
+    coarse = squares(x0, y0, x1, y1, coarse_km)
+    if any(",".join(map(str, b)) not in store for b in coarse):
+        try:  # quick check before sending big requests
+            http("https://api.ohsome.org/v1/metadata", timeout=30, tries=1)
         except RuntimeError:
-            if len(chunk) == 1:
-                failed.append(chunk[0][0])
-                return {chunk[0][0]: 0.0}
-            m = len(chunk) // 2
-            return {**query(chunk[:m]), **query(chunk[m:])}
-        return {g["groupByObject"]: g["result"][-1]["value"] for g in d["groupByResult"]}
-
-    batch = 150
-    for i in range(0, len(todo), batch):
-        store.update(query(todo[i:i + batch]))
-        store_p.write_text(json.dumps(store))
-        print(f"    ski-route lengths: {min(i + batch, len(todo))}/{len(todo)} new shapes", flush=True)
-    if failed:
-        print(f"    ohsome could not measure {len(failed)} zones (counted as 0 m)")
-    return {pid: store[h] for pid, _, h in keyed}
+            print("    ohsome not answering; using saved route data only", flush=True)
+            complete = False
+    if complete:
+        ask(coarse)
+    fine = []
+    for b in coarse:
+        if store.get(",".join(map(str, b)), 0) > 0:
+            fine += squares(*b, fine_km)
+    if complete:
+        ask(fine)
+    cells = [[*b, store[",".join(map(str, b))]] for b in fine
+             if store.get(",".join(map(str, b)), 0) > 0]
+    return cells, complete
 
 
 def osm_winter_sports_areas(bbox):

@@ -113,13 +113,18 @@ def derivatives(z, grid: Grid):
     return slope, aspect, aspect_s, lap.astype(np.float32)
 
 
-def treeline(z, slope, tree, cls, grid: Grid, block_deg=0.1):
+def treeline(z, slope, tree, cls, grid: Grid, block_deg=0.1, forest_frac=0.8, open_frac=0.4):
     """Estimate where forest gives way to open terrain, block by block.
 
     Returns two grids, t_lo (top of continuous forest) and t_hi (start of the
     alpine). Avalanche forecasts use three bands: below treeline (forest), treeline
     (the transition) and alpine (above the trees). The forecasts don't publish
     fixed elevations, so we read the transition from the land-cover data.
+
+    Calibrated (Nov 2026) against the bands the US centres do publish: with these
+    thresholds the estimate matches IPAC's Selkirk "near treeline" band
+    (5,500-6,500 ft) and NWAC's Stevens Pass middle band (5,000-6,000 ft) within
+    ~20 m, and NWAC West Slopes North within ~50 m.
     """
     H, W = grid.shape
     bi = max(1, int(round(block_deg / RES_LAT)))
@@ -146,13 +151,13 @@ def treeline(z, slope, tree, cls, grid: Grid, block_deg=0.1):
             f = frac[levels]
             # smooth across neighbouring 50 m bands
             f = np.convolve(np.pad(f, 1, mode="edge"), [0.25, 0.5, 0.25], mode="valid")
-            forest = levels[f >= 0.5]
+            forest = levels[f >= forest_frac]
             if forest.size == 0 or levels.max() * 50 < 1200:
                 continue
             top_forest = forest.max() * 50 + 25
             above = levels[(levels * 50 > top_forest)]
             fa = f[np.isin(levels, above)]
-            open_ = above[fa < 0.12]
+            open_ = above[fa < open_frac]
             if open_.size == 0:
                 continue
             alpine = open_.min() * 50 + 25

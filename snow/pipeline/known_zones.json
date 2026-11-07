@@ -1,0 +1,658 @@
+{
+ "_about": "Named places that several Mountain Information Network reports mention, with the number of reports. A starting list for Steve to check: rename, merge or delete freely. Only place names are kept, never who wrote the reports.",
+ "zones": {
+  "sea-to-sky": [
+   {
+    "name": "Gin Peak",
+    "lat": 50.147,
+    "lon": -123.069,
+    "reports": 32
+   },
+   {
+    "name": "Steep Creek",
+    "lat": 50.379,
+    "lon": -122.302,
+    "reports": 28
+   },
+   {
+    "name": "Round Mountain",
+    "lat": 49.765,
+    "lon": -123.024,
+    "reports": 23
+   },
+   {
+    "name": "Hanging Lake",
+    "lat": 50.15,
+    "lon": -123.079,
+    "reports": 22
+   },
+   {
+    "name": "Lazy Boy",
+    "lat": 50.391,
+    "lon": -122.52,
+    "reports": 19
+   },
+   {
+    "name": "Marriott Basin",
+    "lat": 50.43,
+    "lon": -122.481,
+    "reports": 17
+   },
+   {
+    "name": "Disease Ridge",
+    "lat": 50.073,
+    "lon": -122.877,
+    "reports": 16
+   },
+   {
+    "name": "Metal Dome",
+    "lat": 50.107,
+    "lon": -123.181,
+    "reports": 14
+   },
+   {
+    "name": "Red Heather",
+    "lat": 49.764,
+    "lon": -123.033,
+    "reports": 14
+   },
+   {
+    "name": "Blackcomb Backcountry",
+    "lat": 50.081,
+    "lon": -122.854,
+    "reports": 13
+   },
+   {
+    "name": "Musical Bumps",
+    "lat": 50.037,
+    "lon": -122.899,
+    "reports": 13
+   },
+   {
+    "name": "Cowboy Ridge",
+    "lat": 50.033,
+    "lon": -122.88,
+    "reports": 12
+   },
+   {
+    "name": "Wendy Thompson Hut",
+    "lat": 50.43,
+    "lon": -122.474,
+    "reports": 12
+   },
+   {
+    "name": "Paul Ridge",
+    "lat": 49.769,
+    "lon": -123.016,
+    "reports": 11
+   },
+   {
+    "name": "Sproatt",
+    "lat": 50.131,
+    "lon": -123.028,
+    "reports": 10
+   },
+   {
+    "name": "Sky Pilot",
+    "lat": 49.642,
+    "lon": -123.091,
+    "reports": 10
+   },
+   {
+    "name": "Cayoosh",
+    "lat": 50.395,
+    "lon": -122.505,
+    "reports": 9
+   },
+   {
+    "name": "Oboe",
+    "lat": 50.036,
+    "lon": -122.903,
+    "reports": 9
+   },
+   {
+    "name": "Brandywine",
+    "lat": 50.104,
+    "lon": -123.212,
+    "reports": 8
+   },
+   {
+    "name": "Marriot Basin",
+    "lat": 50.424,
+    "lon": -122.471,
+    "reports": 7
+   },
+   {
+    "name": "Brohm Ridge",
+    "lat": 49.852,
+    "lon": -123.072,
+    "reports": 7
+   },
+   {
+    "name": "Wendy Thompson",
+    "lat": 50.43,
+    "lon": -122.474,
+    "reports": 7
+   },
+   {
+    "name": "Heartstrings",
+    "lat": 50.349,
+    "lon": -122.498,
+    "reports": 7
+   },
+   {
+    "name": "Blackcomb",
+    "lat": 50.082,
+    "lon": -122.873,
+    "reports": 6
+   },
+   {
+    "name": "Shovelnose",
+    "lat": 50.067,
+    "lon": -123.262,
+    "reports": 6
+   },
+   {
+    "name": "Ledge Basin",
+    "lat": 49.644,
+    "lon": -123.077,
+    "reports": 6
+   },
+   {
+    "name": "Black Tusk",
+    "lat": 49.969,
+    "lon": -123.044,
+    "reports": 6
+   },
+   {
+    "name": "Spearhead Glacier",
+    "lat": 50.088,
+    "lon": -122.852,
+    "reports": 6
+   },
+   {
+    "name": "Brohm",
+    "lat": 49.854,
+    "lon": -123.057,
+    "reports": 6
+   },
+   {
+    "name": "Lower Body Bag Bowl",
+    "lat": 50.075,
+    "lon": -122.886,
+    "reports": 6
+   },
+   {
+    "name": "Rainbow Mountain",
+    "lat": 50.169,
+    "lon": -123.055,
+    "reports": 5
+   },
+   {
+    "name": "Singing Pass",
+    "lat": 50.044,
+    "lon": -122.896,
+    "reports": 5
+   },
+   {
+    "name": "Round Mtn",
+    "lat": 49.766,
+    "lon": -123.027,
+    "reports": 5
+   },
+   {
+    "name": "Mt Rohr",
+    "lat": 50.398,
+    "lon": -122.414,
+    "reports": 5
+   },
+   {
+    "name": "Garibaldi Neve",
+    "lat": 49.845,
+    "lon": -122.988,
+    "reports": 5
+   },
+   {
+    "name": "Stadium Glacier",
+    "lat": 49.636,
+    "lon": -123.092,
+    "reports": 5
+   },
+   {
+    "name": "Anniversary Glacier",
+    "lat": 50.334,
+    "lon": -122.44,
+    "reports": 5
+   },
+   {
+    "name": "Heart Strings",
+    "lat": 50.347,
+    "lon": -122.498,
+    "reports": 5
+   },
+   {
+    "name": "Blackcomb Glacier",
+    "lat": 50.093,
+    "lon": -122.873,
+    "reports": 4
+   },
+   {
+    "name": "Chuting Gallery",
+    "lat": 50.071,
+    "lon": -122.879,
+    "reports": 4
+   },
+   {
+    "name": "Cloudburst",
+    "lat": 49.94,
+    "lon": -123.235,
+    "reports": 4
+   },
+   {
+    "name": "Lakeside Bowl",
+    "lat": 50.081,
+    "lon": -122.881,
+    "reports": 4
+   },
+   {
+    "name": "Ledge Trees",
+    "lat": 49.642,
+    "lon": -123.078,
+    "reports": 4
+   },
+   {
+    "name": "Joffre Shoulder",
+    "lat": 50.36,
+    "lon": -122.469,
+    "reports": 4
+   },
+   {
+    "name": "Panorama Ridge",
+    "lat": 49.955,
+    "lon": -123.016,
+    "reports": 4
+   },
+   {
+    "name": "Cassiope",
+    "lat": 50.366,
+    "lon": -122.594,
+    "reports": 4
+   },
+   {
+    "name": "Shannon Basin",
+    "lat": 49.643,
+    "lon": -123.091,
+    "reports": 4
+   },
+   {
+    "name": "Decker",
+    "lat": 50.07,
+    "lon": -122.854,
+    "reports": 4
+   },
+   {
+    "name": "Snowspider",
+    "lat": 50.286,
+    "lon": -122.373,
+    "reports": 4
+   },
+   {
+    "name": "Gondola",
+    "lat": 49.64,
+    "lon": -123.088,
+    "reports": 4
+   },
+   {
+    "name": "Mulligan",
+    "lat": 49.687,
+    "lon": -123.047,
+    "reports": 4
+   },
+   {
+    "name": "Flute",
+    "lat": 50.043,
+    "lon": -122.918,
+    "reports": 4
+   },
+   {
+    "name": "Chief Pascal",
+    "lat": 50.362,
+    "lon": -122.449,
+    "reports": 4
+   },
+   {
+    "name": "Chief Pascall",
+    "lat": 50.362,
+    "lon": -122.452,
+    "reports": 4
+   },
+   {
+    "name": "Sootip",
+    "lat": 50.262,
+    "lon": -122.976,
+    "reports": 4
+   },
+   {
+    "name": "Husume",
+    "lat": 50.093,
+    "lon": -122.865,
+    "reports": 4
+   },
+   {
+    "name": "Lesser Flute",
+    "lat": 50.045,
+    "lon": -122.918,
+    "reports": 4
+   },
+   {
+    "name": "Rohr",
+    "lat": 50.403,
+    "lon": -122.422,
+    "reports": 3
+   },
+   {
+    "name": "Cerise Creek",
+    "lat": 50.342,
+    "lon": -122.405,
+    "reports": 3
+   },
+   {
+    "name": "Mt Mulligan",
+    "lat": 49.685,
+    "lon": -123.045,
+    "reports": 3
+   },
+   {
+    "name": "Lower Body Bag",
+    "lat": 50.075,
+    "lon": -122.886,
+    "reports": 3
+   },
+   {
+    "name": "Steep Creek Avalanches",
+    "lat": 50.38,
+    "lon": -122.296,
+    "reports": 3
+   },
+   {
+    "name": "Black Tusk Meadows",
+    "lat": 49.963,
+    "lon": -123.049,
+    "reports": 3
+   },
+   {
+    "name": "Armchair",
+    "lat": 50.401,
+    "lon": -122.509,
+    "reports": 3
+   },
+   {
+    "name": "Mamquam",
+    "lat": 49.778,
+    "lon": -122.852,
+    "reports": 3
+   },
+   {
+    "name": "Rainbow Mtn",
+    "lat": 50.169,
+    "lon": -123.052,
+    "reports": 3
+   },
+   {
+    "name": "Goat Ridge",
+    "lat": 49.639,
+    "lon": -123.125,
+    "reports": 3
+   },
+   {
+    "name": "Spearhead Traverse",
+    "lat": 50.028,
+    "lon": -122.794,
+    "reports": 3
+   },
+   {
+    "name": "Keith S Hut",
+    "lat": 50.347,
+    "lon": -122.423,
+    "reports": 3
+   },
+   {
+    "name": "Dust On Crust",
+    "lat": 50.071,
+    "lon": -122.878,
+    "reports": 3
+   },
+   {
+    "name": "Hurley",
+    "lat": 50.597,
+    "lon": -123.004,
+    "reports": 3
+   },
+   {
+    "name": "East Col",
+    "lat": 50.083,
+    "lon": -122.868,
+    "reports": 3
+   },
+   {
+    "name": "Red Heather Meadows",
+    "lat": 49.763,
+    "lon": -123.028,
+    "reports": 3
+   },
+   {
+    "name": "Sky Pilot Area",
+    "lat": 49.64,
+    "lon": -123.089,
+    "reports": 3
+   },
+   {
+    "name": "Spearhead",
+    "lat": 50.038,
+    "lon": -122.793,
+    "reports": 3
+   },
+   {
+    "name": "Paul Ridge Powder",
+    "lat": 49.766,
+    "lon": -123.019,
+    "reports": 3
+   },
+   {
+    "name": "Vantage Ridge",
+    "lat": 50.34,
+    "lon": -122.404,
+    "reports": 3
+   },
+   {
+    "name": "Russet Ridge",
+    "lat": 50.036,
+    "lon": -122.872,
+    "reports": 3
+   },
+   {
+    "name": "Shovelnose Creek",
+    "lat": 50.077,
+    "lon": -123.252,
+    "reports": 3
+   },
+   {
+    "name": "Flute Oboe",
+    "lat": 50.043,
+    "lon": -122.91,
+    "reports": 3
+   },
+   {
+    "name": "Rohr Lake",
+    "lat": 50.411,
+    "lon": -122.442,
+    "reports": 3
+   },
+   {
+    "name": "Whirlwind",
+    "lat": 50.009,
+    "lon": -122.844,
+    "reports": 3
+   },
+   {
+    "name": "Garibaldi Summit",
+    "lat": 49.852,
+    "lon": -123.005,
+    "reports": 3
+   },
+   {
+    "name": "Matier Glacier",
+    "lat": 50.33,
+    "lon": -122.458,
+    "reports": 3
+   }
+  ],
+  "north-cascades": [],
+  "south-selkirks": [
+   {
+    "name": "Kootenay Pass",
+    "lat": 49.051,
+    "lon": -117.029,
+    "reports": 22
+   },
+   {
+    "name": "Cornice Ridge",
+    "lat": 49.069,
+    "lon": -117.055,
+    "reports": 17
+   },
+   {
+    "name": "Evening Ridge",
+    "lat": 49.46,
+    "lon": -117.184,
+    "reports": 13
+   },
+   {
+    "name": "White Queen",
+    "lat": 49.458,
+    "lon": -117.149,
+    "reports": 9
+   },
+   {
+    "name": "Gray Creek Pass",
+    "lat": 49.581,
+    "lon": -116.676,
+    "reports": 8
+   },
+   {
+    "name": "Goose Creek",
+    "lat": 49.46,
+    "lon": -117.681,
+    "reports": 7
+   },
+   {
+    "name": "Bonnington Traverse",
+    "lat": 49.346,
+    "lon": -117.437,
+    "reports": 7
+   },
+   {
+    "name": "Black Queen",
+    "lat": 49.46,
+    "lon": -117.142,
+    "reports": 6
+   },
+   {
+    "name": "Mile",
+    "lat": 49.446,
+    "lon": -117.121,
+    "reports": 5
+   },
+   {
+    "name": "Baldy Rocks",
+    "lat": 49.05,
+    "lon": -117.034,
+    "reports": 5
+   },
+   {
+    "name": "Mile Basin",
+    "lat": 49.45,
+    "lon": -117.118,
+    "reports": 4
+   },
+   {
+    "name": "Baldy",
+    "lat": 49.051,
+    "lon": -117.033,
+    "reports": 4
+   },
+   {
+    "name": "Buzz'S Ridge",
+    "lat": 49.073,
+    "lon": -117.049,
+    "reports": 4
+   },
+   {
+    "name": "Silver King Ridge",
+    "lat": 49.448,
+    "lon": -117.132,
+    "reports": 4
+   },
+   {
+    "name": "Hummingbird Pass",
+    "lat": 49.457,
+    "lon": -117.176,
+    "reports": 4
+   },
+   {
+    "name": "Ripple Ridge",
+    "lat": 49.045,
+    "lon": -117.049,
+    "reports": 4
+   },
+   {
+    "name": "West Ymir",
+    "lat": 49.434,
+    "lon": -117.126,
+    "reports": 4
+   },
+   {
+    "name": "Whitewater",
+    "lat": 49.435,
+    "lon": -117.154,
+    "reports": 3
+   },
+   {
+    "name": "Baldy Rocks South",
+    "lat": 49.05,
+    "lon": -117.032,
+    "reports": 3
+   },
+   {
+    "name": "Giveout",
+    "lat": 49.415,
+    "lon": -117.291,
+    "reports": 3
+   },
+   {
+    "name": "Grassy",
+    "lat": 49.297,
+    "lon": -117.487,
+    "reports": 3
+   },
+   {
+    "name": "Ymir",
+    "lat": 49.272,
+    "lon": -117.147,
+    "reports": 3
+   },
+   {
+    "name": "Camel'S Hump",
+    "lat": 49.083,
+    "lon": -117.035,
+    "reports": 3
+   },
+   {
+    "name": "Grassy Hut",
+    "lat": 49.295,
+    "lon": -117.495,
+    "reports": 3
+   }
+  ]
+ }
+}

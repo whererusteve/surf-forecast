@@ -1,0 +1,50 @@
+{
+ "regions": [
+  {
+   "id": "sea-to-sky",
+   "name": "Sea-to-Sky",
+   "bbox": {
+    "lat_min": 49.6,
+    "lat_max": 50.8,
+    "lon_min": -123.55,
+    "lon_max": -121.85
+   },
+   "zones": 9232,
+   "centres": [
+    "avcan"
+   ],
+   "generated": "2026-11-07T10:57+00:00"
+  },
+  {
+   "id": "north-cascades",
+   "name": "North Cascades",
+   "bbox": {
+    "lat_min": 47.55,
+    "lat_max": 49.0,
+    "lon_min": -122.0,
+    "lon_max": -120.35
+   },
+   "zones": 9333,
+   "centres": [
+    "NWAC"
+   ],
+   "generated": "2026-11-07T10:58+00:00"
+  },
+  {
+   "id": "south-selkirks",
+   "name": "Southern Selkirks",
+   "bbox": {
+    "lat_min": 48.3,
+    "lat_max": 49.85,
+    "lon_min": -117.8,
+    "lon_max": -116.4
+   },
+   "zones": 6331,
+   "centres": [
+    "avcan",
+    "IPAC"
+   ],
+   "generated": "2026-11-07T11:09+00:00"
+  }
+ ]
+}
