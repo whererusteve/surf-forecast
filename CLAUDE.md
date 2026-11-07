@@ -14,6 +14,10 @@ The owner (Steve) is a writer and content person, not primarily a coder. He hand
 
 `app/js/forecast.js` saves Open-Meteo responses in Cache Storage (`surf-forecast-v1`), not localStorage (too small, and it holds surf reports). Fresh for 1 h; used as a fallback up to 12 h old if the network fails (status line says so). Bump the cache name if the response format the app expects changes.
 
+## Standing reminder
+
+The feedback email address isn't set yet (`FEEDBACK_EMAIL` in `app/js/config.js` is empty). Steve asked to be reminded: **end every update you hand over by asking him for the address**, until it's set. Then remove this section.
+
 ## Surf reports
 
 Testers' reports are stored in localStorage (`surfReports.v1`) and emailed via `mailto:`. Each email ends with a `DATA {json}` line, the full report object from `app/js/reports.js`, so emails can be parsed in bulk later. Report choice `value`s are stored data: don't rename them, only their labels. Times display in the viewer's local time zone (BC and WA no longer always share a clock).
