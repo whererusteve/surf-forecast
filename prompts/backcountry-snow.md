@@ -17,7 +17,7 @@ Steve Andrews: writer, sound mixer, snowboarder of 30+ years, Canadian Avalanche
 - Treat his avalanche knowledge as expert. When the model and his field judgement disagree, ask him.
 - Follow the repo's `CLAUDE.md`. Its rules apply here too.
 - **Testers are Steve and other Alpine Islands members.**
-- **Email reminder:** the address for field reports isn't set yet. Steve will create one later. **At the end of every update you hand over, remind Steve to send you the feedback email address**, until it's set in the app's config. (The surf app's `FEEDBACK_EMAIL` in `app/js/config.js` is also still empty; remind him about both.)
+- **Feedback email:** `Gnar-Data@proton.me` (set 2026-11-07) for both apps. The reminder is no longer needed.
 
 ## 2. What we're building
 
@@ -222,7 +222,7 @@ Verify each before building on it: that it still exists, how to call it, its ter
 9. Phase 1b: known zones across the rest of BC. ★ Confirm the list with Steve.
 10. ★ Hand over: what works, what's uncertain, how to test it, and suggested next steps.
 
-**At every ★ check-in and hand-over, end with the email reminder** (section 1) until the address is set.
+The feedback address is set, so check-ins no longer need the email reminder.
 
 ## 9. Steve's answers so far, and what's left to ask
 
@@ -234,7 +234,16 @@ Already decided:
 - **Culturally significant mountains:** stay in, with an acknowledgement drawn from the Nations' own public sources; walk gently and with respect.
 - **Alpine Islands:** connect now, as a page on the site.
 - **Curation:** Steve combs through and removes areas; automatic exclusions handle reserves, tenures, closures and sites Nations ask to be avoided.
-- **Email address:** later. Remind him at every hand-over.
+- **Email address:** `Gnar-Data@proton.me`, for both the snow app and the surf app (set 2026-11-07). No more reminders needed.
+
+Decided at the first check-in (2026-11-07):
+- **Avalanche Canada:** build on the public API now. Steve gets written permission (he knows people there) before the app goes public. Until then show ratings, problems and a link, not the bulletin text.
+- **Washington Selkirks:** left out (no avalanche centre forecasts them). Idaho Selkirks (IPAC) stay. The North Cascades stay.
+- **Native Land Digital:** Steve signs up and agrees to the Data Sovereignty Treaty himself. Its terms forbid storing or redistributing the data without permission and charging for access (including paid memberships), so use it only to find which Nations to check; the territory names the app shows come from each Nation's own public sources.
+- **Phase 1b list (final):** Coquihalla, Rogers Pass, the Rockies (Golden/Yoho, Fernie/Elk Valley, Robson/Valemount), Babine Mountains, Terrace, Stikine, Stewart, North Shore, Revelstoke, Kootenay Lake, Vancouver Island. Dease Lake dropped (no Avalanche Canada forecast area). Sea-to-Sky and the Duffey are already phase 1.
+- **Open-Meteo:** if money ever changes hands, Steve will buy a commercial licence.
+- **Disclaimer:** Steve's paragraph, then bullets for: AST 1 assumed, read the official bulletin first, what the model can't see.
+- **Acknowledgement:** say what the Nations did (cared for these lands for a very long time), not what they didn't do, and ask visitors to treat the land like a relative. Steve reviews the final wording.
 
 Still to ask, when it comes up:
 1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
