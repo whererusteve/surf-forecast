@@ -74,6 +74,12 @@ export function renderDetail(el, spot, ctx) {
       <h3>Tide · ${esc(ctx.station.name)} <span class="hint">(${spot.tideKm} km away)</span></h3>
       <div id="tide-box"><p class="hint">Loading tides…</p></div>
       <p class="hint">${esc(tideHint(spot))} <em>(A guess from depth data, not used in the score.)</em></p>
+    </div>
+
+    <div class="card report-cta">
+      <h3>Been here?</h3>
+      <p class="hint">Checked it or surfed it? Tell us what it was really like. Your report sits next to what the app predicted, so we can see where the model is right and where it's wrong.</p>
+      <button type="button" class="btn" data-report>Report what you saw</button>
     </div>`;
 
   el.querySelectorAll("[data-hour]").forEach((b) =>
@@ -86,6 +92,7 @@ export function renderDetail(el, spot, ctx) {
       ctx.onPickHour(Math.round(frac * (ctx.times.length - 1)));
     });
   }
+  el.querySelector("[data-report]")?.addEventListener("click", () => ctx.onReport?.());
   loadTide(el.querySelector("#tide-box"), ctx);
 }
 

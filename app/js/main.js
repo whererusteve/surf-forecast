@@ -4,9 +4,12 @@ import { unpackWindow, scoreSpot, SIZE_PRESETS, compass } from "./scoring.js";
 import { fetchForecasts, conditionsAt } from "./forecast.js";
 import { isDaylight } from "./sun.js";
 import { renderDetail } from "./detail.js";
+import { openReportForm, renderReportsPanel } from "./feedback.js";
 
 const $ = (id) => document.getElementById(id);
-const TZ = "America/Vancouver";
+// Times show on the viewer's own clock. (BC and Washington no longer always share a
+// clock: BC now stays on daylight time year-round, Washington still falls back.)
+const TZ = undefined;
 const LIST_SIZE = 40;
 const DEDUPE_KM = 3;
 
@@ -270,6 +273,7 @@ function windWord(s) {
 // ---------------------------------------------------------------------------
 
 function selectSpot(s, { pan = true } = {}) {
+  if (state.selected !== s) $("report").innerHTML = "";
   state.selected = s;
   history.replaceState(null, "", `#${s.id}`);
   if (selectedRing) selectedRing.remove();
@@ -299,6 +303,38 @@ function showDetail(s) {
     sizePreset: SIZE_PRESETS[state.size],
     fmtFace, fmtHeight, fmtTime, fmtDay, scoreColor,
     onPickHour: (h) => { setMode("time"); setHour(h); },
+    onReport: () => openReportForm($("report"), s, () => reportCtx(s), { onSaved: refreshReports }),
+  });
+}
+
+/** Forecast arrays for one spot, used to record what the app predicted in a surf report. */
+function reportCtx(s) {
+  const nH = state.nHours;
+  return {
+    name: spotName(s),
+    times: state.fc.times,
+    conds: state.conds[s.fp],
+    scores: state.scores.subarray(s.index * nH, (s.index + 1) * nH),
+    faces: state.faces.subarray(s.index * nH, (s.index + 1) * nH),
+    station: state.data.tideStations[s.tide],
+    sizePreset: SIZE_PRESETS[state.size],
+    sizeName: state.size,
+    binDeg: state.data.binDeg,
+  };
+}
+
+function refreshReports() {
+  renderReportsPanel($("my-reports-body"), $("my-reports-count"), {
+    onOpenSpot: (lat, lon) => {
+      // spot IDs can change when the data is rebuilt, so find the spot by location
+      let best = null;
+      let bestKm = 1;
+      for (const s of state.spots) {
+        const km = kmBetween(s, { lat, lon });
+        if (km < bestKm) { best = s; bestKm = km; }
+      }
+      if (best) selectSpot(best);
+    },
   });
 }
 
@@ -306,6 +342,7 @@ function closeDetail() {
   state.selected = null;
   history.replaceState(null, "", location.pathname + location.search);
   if (selectedRing) { selectedRing.remove(); selectedRing = null; }
+  $("report").innerHTML = "";
   $("detail-view").hidden = true;
   $("list-view").hidden = false;
 }
@@ -381,6 +418,7 @@ function statusLine() {
 
 async function init() {
   wireControls();
+  refreshReports();
   try {
     const data = await (await fetch("data/spots.json")).json();
     state.data = data;

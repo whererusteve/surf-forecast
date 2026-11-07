@@ -10,6 +10,10 @@ The owner (Steve) is a writer and content person, not primarily a coder. He hand
 - Keep forecast points (`forecastPoints` in spots.json) around 200 or fewer. Each costs one Open-Meteo call per API per page load (limit 600/min). Tune `FORECAST_GRID_DEG` in the pipeline.
 - Spot IDs (`PNW-0001`…) are reassigned on every pipeline run. Don't rely on them being stable across rebuilds.
 
+## Surf reports
+
+Testers' reports are stored in localStorage (`surfReports.v1`) and emailed via `mailto:`. Each email ends with a `DATA {json}` line, the full report object from `app/js/reports.js`, so emails can be parsed in bulk later. Report choice `value`s are stored data: don't rename them, only their labels. Times display in the viewer's local time zone (BC and WA no longer always share a clock).
+
 ## Hosting
 
 GitHub Pages deploys from the `main` branch root (classic branch mode, not Actions). Root `index.html` redirects to `app/`; `.nojekyll` stops Jekyll processing. `.github/workflows/tests.yml` only runs tests.

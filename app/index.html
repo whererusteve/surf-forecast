@@ -70,9 +70,14 @@
       <section id="detail-view" class="view" hidden>
         <button id="back" class="back">‹ All spots</button>
         <div id="detail"></div>
+        <div id="report"></div>
       </section>
 
       <footer class="foot">
+        <details id="my-reports">
+          <summary>Your surf reports <span id="my-reports-count"></span></summary>
+          <div id="my-reports-body"></div>
+        </details>
         <details>
           <summary>How this works &amp; surf respectfully</summary>
           <p>Every dot is a stretch of coast found in NOAA seafloor depth data (ETOPO 2022). For each one we worked out which swell directions can physically reach it past islands and headlands, which way it faces, and how the seafloor shoals. Live swell and wind (Open-Meteo) are scored against that geography, hour by hour.</p>
