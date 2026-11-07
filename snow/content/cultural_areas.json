@@ -1,0 +1,95 @@
+{
+  "_about": "Steve edits this file. It says how the app treats culturally designated areas from BC's land-use plans and what it tells people about them. The pipeline matches entries by the area's LOCATION_NAME in BC's Legal Planning Objectives data. 'status' is one of: block (removed from the app, shown on the map as closed), flag (zones stay, with this note beside them), seasonal (zones stay, with closure dates). Only state what the Nations or the Province have published, credited with a link. Never add stories. Every entry with \"review\": true needs Steve's sign-off before going live.",
+
+  "rules": {
+    "_about": "Steve's decision (2026-11-07): flag cultural areas with why they're cultural and who to contact; block them where they are documented as cultural use. Joffre Lakes / Pipi7íyekw is an exception: it closes only part of the year.",
+    "Cultural Places": "block",
+    "Cultural Management Area": "flag"
+  },
+
+  "nations": {
+    "Lil'wat Nation": {"name": "Líl̓wat Nation", "contact": "https://lilwat.ca/contact/"},
+    "Squamish Nation": {"name": "Squamish Nation (Sḵwx̱wú7mesh Úxwumixw)", "contact": "https://www.squamish.net/contact-us/"},
+    "N'Quatqua": {"name": "N'Quatqua", "contact": "https://www.nquatqua.ca/"},
+    "In-SHUCK-ch Nation": {"name": "In-SHUCK-ch Nation (as named in the land-use plan)", "contact": null, "review": "Contact not yet confirmed: the In-SHUCK-ch communities now act as separate Nations. Steve to confirm who to name."}
+  },
+
+  "sources": {
+    "s2sOrder": {"label": "Sea-to-Sky land use objectives order (Province of BC, 2011)", "url": "https://www2.gov.bc.ca/assets/download/7C12604800794E3AB57E769EF4C97F23"},
+    "s2sPlan": {"label": "Sea to Sky Land and Resource Management Plan (Province of BC)", "url": "https://www2.gov.bc.ca/gov/content/industry/crown-land-water/land-use-planning/regions/south-coast-region-plans/seatosky-lrmp"},
+    "pipiOrder": {"label": "Land Use Objectives for Pipi7iyekw, Ministerial Order M007 (Province of BC, 2019)", "url": "https://www2.gov.bc.ca/assets/download/8D96D253356C4DC5B33E0B3DC0E070A4"},
+    "joffre": {"label": "Pipi7íyekw / Joffre Lakes Park (BC Parks)", "url": "https://bcparks.ca/joffre-lakes-park/"}
+  },
+
+  "kinds": {
+    "_about": "Default wording by kind of Cultural Place, chosen by words in the area's name.",
+    "spirited ground": {
+      "why": "A Líl̓wat Nation A7x7ūlmecw (spirited ground) area, designated a First Nations' Cultural Place in the Sea-to-Sky land use order.",
+      "nations": ["Lil'wat Nation"], "sources": ["s2sOrder"]
+    },
+    "(cultural) site": {
+      "why": "A Squamish Nation Síiyamin ta Skwxwú7mesh (cultural) site, designated a First Nations' Cultural Place in the Sea-to-Sky land use order.",
+      "nations": ["Squamish Nation"], "sources": ["s2sOrder"]
+    },
+    "(village) site": {
+      "why": "A Squamish Nation úxwumixw (village) site, designated a First Nations' Cultural Place in the Sea-to-Sky land use order.",
+      "nations": ["Squamish Nation"], "sources": ["s2sOrder"]
+    },
+    "default": {
+      "why": "Designated a First Nations' Cultural Place in BC's land-use plan for this area.",
+      "nations": [], "sources": ["s2sOrder"]
+    }
+  },
+
+  "areas": {
+    "Pipi7iyekw Old Growth and Sensitive Area": {
+      "status": "seasonal",
+      "title": "Pipi7íyekw (Cerise Creek Old-Growth and Sensitive Area)",
+      "why": "Líl̓wat Nation. A 2019 provincial order protects the cultural heritage resources here for First Nations' food, social and ceremonial use. Next door, Pipi7íyekw / Joffre Lakes Park closes on set dates so the Líl̓wat Nation and N'Quatqua can use the land for cultural practices: June 20–27 and September 8–30 in 2026. Check BC Parks for current dates before you go.",
+      "nations": ["Lil'wat Nation", "N'Quatqua"],
+      "sources": ["pipiOrder", "joffre"],
+      "review": true
+    },
+    "Callaghan": {
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned. The Callaghan sits in territory of both the Líl̓wat and Squamish Nations.",
+      "nations": ["Lil'wat Nation", "Squamish Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "Upper Cheakamus": {
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned.",
+      "nations": ["Squamish Nation", "Lil'wat Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "Lillooet River": {
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned. The Líl̓wat Nation describes the Lillooet River as the heart of its traditional territory.",
+      "nations": ["Lil'wat Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": "The larger Lillooet River area runs south of Lillooet Lake, where other St'át'imc communities also live. Steve to confirm which Nations to name."
+    },
+    "Upper Birkenhead River Corridor": {
+      "title": "Qwelímak / Upper Birkenhead River Corridor",
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan, known to the Líl̓wat Nation as Qwelímak: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned.",
+      "nations": ["Lil'wat Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "Upper Birkenhead Upland": {
+      "title": "Qwelímak / Upper Birkenhead Upland",
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan, known to the Líl̓wat Nation as Qwelímak: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned.",
+      "nations": ["Lil'wat Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "Upper Elaho": {
+      "title": "Nsiiwx-nitem tl'a sutch / Upper Elaho",
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned. The Squamish Nation's own land-use plan names the Upper Elaho a wild spirit place.",
+      "nations": ["Squamish Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "Upper Soo": {
+      "title": "Sú7a / Upper Soo",
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned.",
+      "nations": ["Lil'wat Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    },
+    "West Squamish": {
+      "title": "Estetiwilh / West Side of the Squamish River",
+      "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan, with Squamish Nation cultural sites nearby: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned.",
+      "nations": ["Squamish Nation"], "sources": ["s2sPlan", "s2sOrder"], "review": true
+    }
+  },
+
+  "watch": [
+    "A new Squamish Nation land use objectives order (2026 draft: 33 Síiyamin sites and 6 Special Cultural Management Areas) would stop use of existing public trails inside those areas. Public comment closed July 20, 2026. When it is finalised, its areas should probably be blocked; check whether BC's data includes them and update this file."
+  ]
+}

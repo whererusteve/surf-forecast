@@ -245,6 +245,10 @@ Decided at the first check-in (2026-11-07):
 - **Disclaimer:** Steve's paragraph, then bullets for: AST 1 assumed, read the official bulletin first, what the model can't see.
 - **Acknowledgement:** say what the Nations did (cared for these lands for a very long time), not what they didn't do, and ask visitors to treat the land like a relative. Steve reviews the final wording.
 
+Decided at the zone-map check-in (2026-11-07):
+- **Heli-ski tenures and proposed ski resorts:** keep them, highlight them on zones, don't exclude. Cat-ski tenures stay excluded.
+- **Cultural areas:** flag them with why they're cultural and who to contact (`snow/content/cultural_areas.json`). Block areas documented as cultural use (Cultural Places). Cultural Management Areas are flagged. Joffre Lakes / Pipi7íyekw is an exception: it closes only part of the year, so it's flagged with the closure dates.
+
 Still to ask, when it comes up:
 1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
 2. The phase 1b list of BC regions, once the usage data suggests one. [STEVE's ANSWER: Sea to sky, duffey lake, coquihalla, rogers' pass, rocky mountains, babine mountains, terrace area, stikine, dease lake, stewart]

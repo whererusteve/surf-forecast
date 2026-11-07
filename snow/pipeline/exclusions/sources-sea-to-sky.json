@@ -1,6 +1,6 @@
 {
   "region": "sea-to-sky",
-  "built": "2026-11-07T11:25+00:00",
+  "built": "2026-11-07T18:35+00:00",
   "sources": [
     {
       "key": "reserve",
@@ -15,12 +15,6 @@
       "terrainKm2": 41.3
     },
     {
-      "key": "heli_tenure",
-      "label": "Commercial heli-ski tenures",
-      "features": 19,
-      "terrainKm2": 1378.8
-    },
-    {
       "key": "cat_tenure",
       "label": "Commercial cat-ski tenures",
       "features": 0,
@@ -28,17 +22,17 @@
     },
     {
       "key": "cultural_place",
-      "label": "Cultural Places (land-use plan)",
-      "features": 71,
-      "terrainKm2": 59.2
+      "label": "Cultural Places documented for cultural use (land-use plans)",
+      "features": 70,
+      "terrainKm2": 58.8
     }
   ],
   "curated": [],
-  "zones": 9415,
-  "droppedTooFar": 1132,
+  "zones": 10788,
+  "droppedTooFar": 1131,
   "useLevels": {
-    "occasional": 680,
-    "little sign of travel": 8554,
-    "well-travelled": 181
+    "occasional": 807,
+    "little sign of travel": 9761,
+    "well-travelled": 220
   }
 }

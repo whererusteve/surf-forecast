@@ -9,11 +9,11 @@
     "lon_min": -123.55,
     "lon_max": -121.85
    },
-   "zones": 9415,
+   "zones": 10788,
    "centres": [
     "avcan"
    ],
-   "generated": "2026-11-07T11:25+00:00"
+   "generated": "2026-11-07T18:35+00:00"
   },
   {
    "id": "north-cascades",
@@ -28,7 +28,7 @@
    "centres": [
     "NWAC"
    ],
-   "generated": "2026-11-07T11:26+00:00"
+   "generated": "2026-11-07T18:37+00:00"
   },
   {
    "id": "south-selkirks",
@@ -39,12 +39,12 @@
     "lon_min": -117.8,
     "lon_max": -116.4
    },
-   "zones": 6331,
+   "zones": 6385,
    "centres": [
     "avcan",
     "IPAC"
    ],
-   "generated": "2026-11-07T11:27+00:00"
+   "generated": "2026-11-07T18:36+00:00"
   }
  ]
 }

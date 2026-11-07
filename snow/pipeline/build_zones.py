@@ -9,8 +9,10 @@ one aspect, cut to a manageable size, each with
   * a terrain "potential" score (fall line, pitch, size), kept apart from hazard
   * a use level (well-travelled / occasional / little sign of travel) from open data
 
-Areas that must not be shown (reserves, tenured ski and heli/cat terrain, mapped
-cultural places, Steve's curated removals) are cut out BEFORE zones are drawn.
+Areas that must not be shown (reserves, operating ski resorts, cat-ski tenures,
+cultural places documented for cultural use, Steve's curated removals) are cut out
+BEFORE zones are drawn. Heli-ski tenures, proposed resorts and other cultural areas
+stay in and are highlighted on the zones they overlap.
 
 Run:   python snow/pipeline/build_zones.py [region ...]     (default: all regions)
 Output: snow/data/zones-<region>.json, snow/data/regions.json,
@@ -61,10 +63,13 @@ ALPHA_DEG = 25          # "could an avalanche reach here" angle up to steep terr
 MAX_FP = 66             # forecast points per region (x 3 elevation bands <= ~200 calls)
 SIMPLIFY_DEG = 0.0004   # polygon simplification for the web (~30-40 m)
 
-# Principle 10 says to remove commercial heli-ski tenures. In BC these tenures don't
-# close the land to the public, and many well-known touring areas sit inside them
-# (16% of Sea-to-Sky MIN reports). Steve decides; until then they are removed.
-EXCLUDE_HELI_TENURES = True
+# Steve's decision (2026-11-07): heli-ski tenures and proposed ski resorts stay in and
+# are highlighted on the zones they overlap. (In BC these tenures don't close the land
+# to the public; 16% of Sea-to-Sky MIN reports come from inside them.) Cat-ski tenures
+# are still removed.
+EXCLUDE_HELI_TENURES = False
+HIGHLIGHT_MIN_SHARE = 0.15   # a highlighted area covering this much of a zone is noted on it
+CONTENT = ROOT / "content"
 
 USE_LABELS = ["little sign of travel", "occasional", "well-travelled"]
 
@@ -85,20 +90,19 @@ def gather_exclusions(rid, region, b):
         out.append(("reserve", "First Nations reserves", [shape(f["geometry"]) for f in res]))
         cra = S.bc_wfs("REG_LEGAL_AND_ADMIN_BOUNDARIES.REC_TENURE_ALPINE_SKI_AREAS_SP", b)
         # Only operating resorts. Proposed ones (e.g. Garibaldi at Squamish on Brohm Ridge,
-        # Coquihalla Pass) have no lifts or ski patrol yet: pending Steve's call.
+        # Coquihalla Pass) stay in and are highlighted (Steve, 2026-11-07).
         out.append(("ski_area", "Ski resort areas (BC Controlled Recreation Areas, active)",
                     [shape(f["geometry"]) for f in cra if f["properties"].get("PROJECT_STATUS") == "Active"]))
         ten = S.bc_wfs("WHSE_TANTALIS.TA_CROWN_TENURES_SVW", b,
                        "TENURE_PURPOSE='COMMERCIAL RECREATION' AND TENURE_SUBPURPOSE IN ('HELI SKI','CAT SKI') "
                        "AND TENURE_STAGE='TENURE'")
-        heli = [shape(f["geometry"]) for f in ten if f["properties"]["TENURE_SUBPURPOSE"] == "HELI SKI"] \
-            if EXCLUDE_HELI_TENURES else []
+        if EXCLUDE_HELI_TENURES:
+            out.append(("heli_tenure", "Commercial heli-ski tenures",
+                        [shape(f["geometry"]) for f in ten if f["properties"]["TENURE_SUBPURPOSE"] == "HELI SKI"]))
         cat = [shape(f["geometry"]) for f in ten if f["properties"]["TENURE_SUBPURPOSE"] == "CAT SKI"]
-        out.append(("heli_tenure", "Commercial heli-ski tenures", heli))
         out.append(("cat_tenure", "Commercial cat-ski tenures", cat))
-        cp = S.bc_wfs("WHSE_LAND_USE_PLANNING.RMP_PLAN_LEGAL_POLY_SVW", b, "LEGAL_FEAT_OBJECTIVE='Cultural Places'",
-                      geom="GEOMETRY")
-        out.append(("cultural_place", "Cultural Places (land-use plan)", [shape(f["geometry"]) for f in cp]))
+        blocked = [a["geom"] for a in cultural_areas(region, b) if a["status"] == "block"]
+        out.append(("cultural_place", "Cultural Places documented for cultural use (land-use plans)", blocked))
     if "US" in region["country"]:
         tl = S.us_tribal_lands(b)
         out.append(("tribal", "Tribal reservations and trust lands", [shape(f["geometry"]) for f in tl if f.get("geometry")]))
@@ -153,12 +157,81 @@ def official_bands(region, grid, t_lo, t_hi):
     return used
 
 
-def cultural_mgmt_areas(region, b):
+def cultural_areas(region, b):
+    """Culturally designated areas from BC's land-use plans, with Steve's wording.
+
+    Rules live in snow/content/cultural_areas.json: Cultural Places are blocked,
+    Cultural Management Areas flagged, with per-area exceptions (Pipi7iyekw is seasonal).
+    """
     if "CA" not in region["country"]:
         return []
-    f = S.bc_wfs("WHSE_LAND_USE_PLANNING.RMP_PLAN_LEGAL_POLY_SVW", b,
-                 "LEGAL_FEAT_OBJECTIVE='Cultural Management Area'", geom="GEOMETRY")
-    return [shape(x["geometry"]) for x in f]
+    content = json.loads((CONTENT / "cultural_areas.json").read_text())
+    fs = S.bc_wfs("WHSE_LAND_USE_PLANNING.RMP_PLAN_LEGAL_POLY_SVW", b,
+                  "LEGAL_FEAT_OBJECTIVE IN ('Cultural Places','Cultural Management Area')", geom="GEOMETRY")
+    out = []
+    for f in fs:
+        p = f["properties"]
+        attrs = {p.get(f"LEGAL_FEAT_ATRB_{i}_NAME"): (p.get(f"LEGAL_FEAT_ATRB_{i}_VALUE") or "").strip()
+                 for i in range(1, 6) if p.get(f"LEGAL_FEAT_ATRB_{i}_NAME")}
+        name = attrs.get("LOCATION_NAME") or p["LEGAL_FEAT_OBJECTIVE"]
+        objective = p["LEGAL_FEAT_OBJECTIVE"]
+        entry = content["areas"].get(name, {})
+        kind = content["kinds"]["default"]
+        if objective == "Cultural Places":
+            for k, v in content["kinds"].items():
+                if k not in ("_about", "default") and k in name:
+                    kind = v
+                    break
+        nation_keys = entry.get("nations") or kind.get("nations") or \
+            ([attrs["FIRST_NATION"]] if attrs.get("FIRST_NATION") in content["nations"] else [])
+        out.append(dict(
+            kind="cultural",
+            status=entry.get("status") or content["rules"].get(objective, "flag"),
+            title=entry.get("title") or name,
+            designation=objective,
+            why=entry.get("why") or kind["why"],
+            nations=[content["nations"][k] for k in nation_keys if k in content["nations"]],
+            sources=[content["sources"][k] for k in (entry.get("sources") or kind.get("sources") or [])],
+            review=entry.get("review", True),
+            geom=shape(f["geometry"]),
+        ))
+    return out
+
+
+def highlight_areas(region, b):
+    """Areas that stay in the app but are pointed out on the zones they overlap."""
+    out = [a for a in cultural_areas(region, b) if a["status"] != "block"]
+    if "CA" in region["country"]:
+        ten = S.bc_wfs("WHSE_TANTALIS.TA_CROWN_TENURES_SVW", b,
+                       "TENURE_PURPOSE='COMMERCIAL RECREATION' AND TENURE_SUBPURPOSE='HELI SKI' "
+                       "AND TENURE_STAGE='TENURE'")
+        for f in ten:
+            out.append(dict(kind="heli", status="flag", title="Commercial heli-ski tenure",
+                            why="A commercial heli-ski operator holds a provincial tenure here. The public can "
+                                "still travel here, but expect helicopters and guided groups, and give them room. "
+                                "(The public tenure data doesn't name the operator.)",
+                            sources=[dict(label="BC Crown tenures (TANTALIS)", url="https://catalogue.data.gov.bc.ca/")],
+                            geom=shape(f["geometry"])))
+        cra = S.bc_wfs("REG_LEGAL_AND_ADMIN_BOUNDARIES.REC_TENURE_ALPINE_SKI_AREAS_SP", b)
+        for f in cra:
+            pr = f["properties"]
+            if pr.get("PROJECT_STATUS") == "Proposed":
+                out.append(dict(kind="proposedResort", status="flag", title=f"Proposed ski resort: {pr['RESORT_NAME']}",
+                                why="This area is set aside for a proposed ski resort that isn't operating. There "
+                                    "are no lifts, no ski patrol and no avalanche control: it's backcountry.",
+                                sources=[dict(label="BC Controlled Recreation Areas", url="https://catalogue.data.gov.bc.ca/")],
+                                geom=shape(f["geometry"])))
+    return out
+
+
+def area_record(a):
+    """Region-level description of a highlighted or blocked area, with a light outline for the map."""
+    g = a["geom"].simplify(0.0015, preserve_topology=True)
+    polys = [g] if g.geom_type == "Polygon" else list(getattr(g, "geoms", []))
+    rings = [[[round(x, 3), round(y, 3)] for x, y in pg.exterior.coords] for pg in polys if pg.area > 1e-6]
+    rec = {k: v for k, v in a.items() if k != "geom"}
+    rec["rings"] = rings
+    return rec
 
 
 def no_sled_geoms(region, b):
@@ -496,8 +569,17 @@ def build(rid):
     use = usage(rid, region, b, lab, n, grid)
     log(f"usage done ({time.time() - t0:.0f} s)")
 
-    cma = cultural_mgmt_areas(region, b)
-    cma_p = prep(unary_union(cma)) if cma else None
+    # Areas to point out on zones (heli tenures, proposed resorts, flagged cultural areas)
+    highlights = highlight_areas(region, b)
+    blocked_cultural = [a for a in cultural_areas(region, b) if a["status"] == "block"]
+    zone_tot = np.bincount(lab.ravel(), minlength=n + 1)
+    zone_flags = defaultdict(list)
+    for ai, a in enumerate(highlights):
+        m = features.rasterize([(a["geom"], 1)], out_shape=grid.shape, transform=grid.transform, fill=0,
+                               dtype="uint8").astype(bool)
+        inside = np.bincount(lab[m], minlength=n + 1)
+        for zid in np.nonzero(inside[1:] >= HIGHLIGHT_MIN_SHARE * zone_tot[1:])[0] + 1:
+            zone_flags[int(zid)].append(ai)
     ates_f = S.bc_wfs("WHSE_HUMAN_CULTURAL_ECONOMIC.RST_ATES_RECREATION_BNDRY_SP", b, geom="GEOMETRY") \
         if "CA" in region["country"] else []
     ates = [(prep(shape(f["geometry"])), f["properties"]["ATES_RECREATION_BNDRY_NAME"]) for f in ates_f]
@@ -555,8 +637,8 @@ def build(rid):
         nm = names(la, lo)
         if nm:
             zone["n"] = nm
-        if cma_p is not None and cma_p.contains(pt):
-            zone["cma"] = True
+        if zone_flags.get(zid):
+            zone["fl"] = zone_flags[zid]
         for p_, nm_ in ates:
             if p_.contains(pt):
                 zone["ates"] = nm_
@@ -586,6 +668,8 @@ def build(rid):
         gates=[dict(name=g["name"], resort=g["resort"], note=g["note"], url=g["url"], rideHours=g["rideHours"])
                for g, _ in gates],
         permits=[p for p in ka["permitsAndClosures"] if p["region"] == rid],
+        areas=[area_record(a) for a in highlights],
+        closedAreas=[area_record(a) for a in blocked_cultural],
         useLabels=USE_LABELS,
         zones=zones,
     )
