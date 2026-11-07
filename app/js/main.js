@@ -408,8 +408,11 @@ function wireControls() {
 function statusLine() {
   const n = state.spots.length;
   const known = state.spots.filter((s) => s.known).length;
-  const at = new Date(state.fc.fetchedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  return `${n.toLocaleString()} candidate spots (${known} near known breaks) · forecast loaded ${at}`;
+  const at = new Date(state.fc.fetchedAt).toLocaleTimeString([], { weekday: "short", hour: "numeric", minute: "2-digit" });
+  const when = state.fc.stale
+    ? `couldn't refresh the forecast, showing the one saved ${at}`
+    : `forecast from ${at}`;
+  return `${n.toLocaleString()} candidate spots (${known} near known breaks) · ${when}`;
 }
 
 // ---------------------------------------------------------------------------

@@ -114,7 +114,7 @@ tests/                    automated tests for the scoring model
 - **It's a model, not a surf report.** A ~450 m depth grid can't see individual reefs, boulders or sandbars, which is exactly what makes or breaks a wave. Treat high scores as "worth a look on satellite", not "it's on".
 - **Coastline accuracy varies.** On the open Washington coast the dots sit right on the beach. In parts of BC's more intricate coast (e.g. north of Vargas Island), the depth grid's coastline is coarser than the satellite imagery, so some dots sit a few hundred metres offshore.
 - **Big rivers.** The Columbia's dredged shipping channel lets a few estuary spots score higher than they should.
-- **Forecast resolution.** Spots within ~20 km share one offshore forecast, which keeps the free API happy (about 200 points, under Open-Meteo's 600-calls-per-minute limit).
+- **Forecast resolution and freshness.** Spots within ~20 km share one offshore forecast, which keeps the free API happy (about 200 points, under Open-Meteo's 600-calls-per-minute limit). Each browser saves the forecast and reuses it for up to an hour, so reloads are instant and don't hit the limit. If a refresh fails, the app shows the last saved forecast (up to 12 hours old) and says so.
 
 ## Roadmap ideas
 
