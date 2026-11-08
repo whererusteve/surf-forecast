@@ -3,7 +3,7 @@
 
 import {
   decodeRing, bestAccess, accessSummary, fmtHours, aspectName, windDirs, fixedHours, rescaleHours,
-  USE_LABELS, BAND_LABELS, SLOPE_CLASSES,
+  USE_LABELS, BAND_LABELS, SLOPE_CLASSES, ATES_LABELS, atesSummary,
 } from "./zones.js";
 
 const $ = (id) => document.getElementById(id);
@@ -29,6 +29,9 @@ map.attributionControl.addAttribution('Zones: Copernicus DEM, ESA WorldCover, BC
 
 const USE_COL = ["#2c7bb6", "#fdae61", "#d7301f"];
 const BAND_COL = ["#4d9221", "#e6ab02", "#5e6c84"];
+// ATES map colours: simple green, challenging blue, complex black, extreme red
+const ATES_COL = ["#4daf4a", "#377eb8", "#222222", "#d62728"];
+const NOT_MODELLED = "#bdbdbd";
 function timeCol(h) {
   return h == null ? "#999" : h <= 2 ? "#1a9850" : h <= 3.5 ? "#a6d96a" : h <= 5 ? "#fee08b" : h <= 8 ? "#f46d43" : "#a50026";
 }
@@ -40,6 +43,7 @@ const LEGENDS = {
   time: [["#1a9850", "≤ 2 h"], ["#a6d96a", "2–3.5 h"], ["#fee08b", "3.5–5 h"], ["#f46d43", "5–8 h"], ["#a50026", "> 8 h"]],
   steep: [["#ffffcc", "< 10% over 35°"], ["#fed976", "10–25%"], ["#fd8d3c", "25–45%"], ["#e31a1c", "45–65%"], ["#800026", "> 65%"]],
   band: [[BAND_COL[2], "Alpine"], [BAND_COL[1], "Treeline"], [BAND_COL[0], "Below treeline"]],
+  ates: [[ATES_COL[3], "Mostly Extreme"], [ATES_COL[2], "Mostly Complex"], [ATES_COL[1], "Mostly Challenging"], [ATES_COL[0], "Mostly Simple"], [NOT_MODELLED, "Not modelled yet"]],
 };
 
 // --- Settings from the controls ---------------------------------------------
@@ -70,7 +74,8 @@ function draw() {
     if (!best) continue;
     const steep = (z.mix[2] || 0) + (z.mix[3] || 0);
     const col = s.colour === "use" ? USE_COL[z.use] : s.colour === "time" ? timeCol(best.h)
-      : s.colour === "steep" ? steepCol(steep) : BAND_COL[z.b];
+      : s.colour === "steep" ? steepCol(steep)
+      : s.colour === "ates" ? (z.aa ? ATES_COL[atesSummary(z.aa).dominant] : NOT_MODELLED) : BAND_COL[z.b];
     const poly = L.polygon(decodeRing(z.c, z.p), {
       color: col, weight: 0.6, fillColor: col, fillOpacity: 0.5,
     });
@@ -141,7 +146,8 @@ function select(z) {
     const scaled = { ...a, h: rescaleHours(a.h, fixed, s.rate) };
     const gate = mode === "lift" ? d.gates[a.gate] : null;
     return `<li>${esc(accessSummary(mode, scaled, fixed))}${gate ? ` <span class="small">via ${esc(gate.name)}</span>` : ""}
-      ${a.exp ? '<br><span class="warn">The approach crosses or runs under avalanche terrain.</span>' : ""}</li>`;
+      ${a.exp ? '<br><span class="warn">The approach crosses or runs under avalanche terrain (challenging or worse).</span>'
+        : a.exp === null ? '<br><span class="small">Approach exposure not assessed yet: the avalanche terrain model hasn\'t run here.</span>' : ""}</li>`;
   }).join("");
   const flags = (z.fl || []).map((i) => areaHtml(d.areas[i])).join("");
   const permits = (z.prm || []).map((i) => d.permits[i]).filter(Boolean)
@@ -154,8 +160,11 @@ function select(z) {
 
     <h3>Slope angles</h3>
     <div class="mix">${z.mix.map((v, i) => `<div style="flex:${Math.max(v, 1)}" class="m${i}" title="${SLOPE_CLASSES[i]}: ${v}%">${v >= 8 ? v + "%" : ""}</div>`).join("")}</div>
-    <p class="small">${z.mix.map((v, i) => `${SLOPE_CLASSES[i]}: ${v}%`).join(" · ")}. ATES rating: ${z.ates ? `in the ATES-mapped area “${esc(z.ates)}” (see its map for ratings)` : "unrated"}.</p>
+    <p class="small">${z.mix.map((v, i) => `${SLOPE_CLASSES[i]}: ${v}%`).join(" · ")}. Official ATES rating: ${z.ates ? `in the ATES-mapped area “${esc(z.ates)}”. Its map comes first; see it for ratings` : "unrated"}.</p>
     <p class="small">Forest cover ${Math.round(z.tree * 100)}%${z.glac > 0.1 ? ` · glacier or permanent snow ${Math.round(z.glac * 100)}%` : ""}${z.trap > 0.1 ? ` · gullies / terrain traps ${Math.round(z.trap * 100)}%` : ""}.</p>
+
+    <h3>Avalanche terrain <span class="small">(model estimate)</span></h3>
+    ${atesHtml(z, d)}
 
     <h3>Getting there <span class="small">(estimates, not route advice)</span></h3>
     <ul class="access">${access}</ul>
@@ -172,6 +181,17 @@ function select(z) {
     ${flags || permits ? `<h3>Know before you go</h3>${flags}${permits}` : ""}
   `;
   $("detail").hidden = false;
+}
+
+function atesHtml(z, d) {
+  const m = d.atesModel || {};
+  const sum = atesSummary(z.aa);
+  if (!sum) return '<p class="small">Not modelled here yet. The avalanche terrain model is still being run across the region.</p>';
+  return `<p><b>${esc(sum.text)}</b></p>
+    <div class="mix ates">${z.aa.map((v, i) => `<div style="flex:${Math.max(v, 1)};background:${ATES_COL[i]}" title="${ATES_LABELS[i]}: ${v}%">${v >= 10 ? v + "%" : ""}</div>`).join("")}</div>
+    <p class="small">${z.aa.map((v, i) => `${ATES_LABELS[i]}: ${v}%`).join(" · ")}.
+    Estimated by <a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.name || "AutoATES")}</a> (${esc(m.cite || "")}).
+    ${esc(m.note || "A model estimate, not an official ATES rating.")} It reads terrain only, not today's snowpack.</p>`;
 }
 
 // --- Loading ----------------------------------------------------------------

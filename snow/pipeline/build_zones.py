@@ -32,7 +32,9 @@ from pathlib import Path
 
 import numpy as np
 from affine import Affine
+import rasterio
 from rasterio import features
+from rasterio.warp import reproject, Resampling
 from scipy import ndimage
 from shapely.geometry import shape, Point, Polygon, box, mapping
 from shapely.ops import unary_union
@@ -457,6 +459,15 @@ def build(rid):
     big = np.bincount(lab_s.ravel()) >= 5
     big[0] = False
     exposed = T.avalanche_exposure(zc, big[lab_s], dy_c, dx_c, alpha_deg=ALPHA_DEG, max_m=1200)
+    # Where AutoATES has run, its map replaces the simple rule above (Steve, 2026-11-08):
+    # challenging terrain or worse counts as avalanche terrain for routing and the approach flag.
+    # The simple rule only fills in, for route costs, where AutoATES hasn't run yet.
+    aa_fine, aa_ok = load_autoates(rid, grid)
+    if aa_ok.any():
+        aa_c = T.coarsen(aa_fine.astype(np.float32), k, "max")
+        modelled_c = T.coarsen(aa_ok.astype(np.float32), k) > 0.5
+        exposed = np.where(modelled_c, aa_c >= 2, exposed)
+    log(f"AutoATES covers {100 * aa_ok.mean():.0f}% of the region so far")
     shelter = T.wind_shelter(zc, dy_c, dx_c)
     log(f"coarse grids ready ({time.time() - t0:.0f} s)")
 
@@ -584,6 +595,13 @@ def build(rid):
     ates = [(prep(shape(f["geometry"])), f["properties"]["ATES_RECREATION_BNDRY_NAME"]) for f in ates_f]
     permits = [(box(*p["bbox"]), i) for i, p in enumerate(ka["permitsAndClosures"]) if p["region"] == rid]
 
+    # AutoATES class mix per zone (only where it covers at least 80% of the zone)
+    flat_l = lab.ravel()
+    ok_f = aa_ok.ravel()
+    aa_tot = np.bincount(flat_l, minlength=n + 1)
+    aa_cov = np.bincount(flat_l[ok_f], minlength=n + 1)
+    aa_cnt = [np.bincount(flat_l[ok_f & (aa_fine.ravel() == c)], minlength=n + 1) for c in (1, 2, 3, 4)]
+
     zones = []
     dropped_far = 0
     for zid in range(1, n + 1):
@@ -638,6 +656,12 @@ def build(rid):
             zone["n"] = nm
         if zone_flags.get(zid):
             zone["fl"] = zone_flags[zid]
+        if aa_tot[zid] and aa_cov[zid] >= 0.8 * aa_tot[zid]:
+            mix = [100 * c[zid] / aa_cov[zid] for c in aa_cnt]
+            zone["aa"] = [int(round(v)) for v in mix]
+        else:
+            for a_ in zone["acc"].values():
+                a_["exp"] = None      # not assessed: AutoATES hasn't run here yet
         for p_, nm_ in ates:
             if p_.contains(pt):
                 zone["ates"] = nm_
@@ -670,6 +694,10 @@ def build(rid):
         areas=[area_record(a) for a in highlights],
         closedAreas=[area_record(a) for a in blocked_cultural],
         useLabels=USE_LABELS,
+        atesModel=dict(name="AutoATES v2.0", coverage=round(float(aa_ok.mean()), 3),
+                       cite="Toft et al. (2024), Natural Hazards and Earth System Sciences 24, 1779-1793",
+                       url="https://doi.org/10.5194/nhess-24-1779-2024",
+                       note="Model estimate of avalanche terrain exposure, not an official ATES rating."),
         zones=zones,
     )
     OUT.mkdir(parents=True, exist_ok=True)
@@ -699,6 +727,24 @@ def encode_ring(ring, lat, lon):
         out += [ix - px, iy - py]
         px, py = ix, iy
     return out
+
+
+def load_autoates(rid, grid):
+    """AutoATES tiles for a region on the zone grid: (classes 1-4, mask of where it has run)."""
+    cls = np.zeros(grid.shape, np.int8)
+    ok = np.zeros(grid.shape, bool)
+    for path in sorted((HERE / "cache" / "autoates" / rid).glob("tile_*.tif")):
+        with rasterio.open(path) as s:
+            a = s.read(1)
+            dst = np.full(grid.shape, -1, np.int16)
+            # inside a modelled tile, "no class" means no avalanche terrain found: count it as simple
+            reproject(np.where(a == -9999, 1, a).astype(np.int16), dst, src_transform=s.transform, src_crs=s.crs,
+                      dst_transform=grid.transform, dst_crs="EPSG:4326", resampling=Resampling.nearest,
+                      src_nodata=-1, dst_nodata=-1)
+        m = dst >= 1
+        cls[m] = dst[m]
+        ok |= m
+    return cls, ok
 
 
 def exposed_flag(leg):

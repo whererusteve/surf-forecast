@@ -59,3 +59,13 @@ test("aspects and wind directions read as compass points", () => {
   assert.equal(aspectName(225), "SW");
   assert.deepEqual(windDirs("00136910"), { strong: ["S", "SW"], some: ["SE"] });
 });
+
+import { atesSummary } from "../../snow/js/zones.js";
+
+test("AutoATES mix reads in plain words, and extreme terrain is never hidden", () => {
+  assert.equal(atesSummary(undefined), null);
+  assert.deepEqual(atesSummary([10, 20, 65, 5]), { dominant: 2, text: "Mostly Complex, with some Extreme terrain (5%)" });
+  assert.deepEqual(atesSummary([40, 35, 25, 0]), { dominant: 0, text: "Simple and Challenging" });
+  assert.equal(atesSummary([20, 15, 30, 35]).text, "Extreme and Complex");
+  assert.equal(atesSummary([100, 0, 0, 0]).text, "Mostly Simple");
+});

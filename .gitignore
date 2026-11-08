@@ -4,5 +4,5 @@ __pycache__/
 node_modules/
 .DS_Store
 snow/pipeline/cache/
-snow/pipeline/experiments/autoates/src/
-snow/pipeline/experiments/autoates/work/
+snow/pipeline/autoates/src/
+snow/pipeline/autoates/work/

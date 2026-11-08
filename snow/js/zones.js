@@ -115,3 +115,24 @@ export function windDirs(digits = "") {
   });
   return { strong, some };
 }
+
+// --- Avalanche terrain model (AutoATES) ----------------------------------
+
+export const ATES_LABELS = ["Simple", "Challenging", "Complex", "Extreme"];
+
+/**
+ * A zone's AutoATES mix ([simple, challenging, complex, extreme] in %) in words.
+ * Returns null when the model hasn't run there yet.
+ * "Mostly Complex" when one class covers half the zone or more, otherwise the two biggest.
+ * Any extreme terrain is always mentioned, since it changes how you'd travel.
+ */
+export function atesSummary(aa) {
+  if (!Array.isArray(aa) || aa.length !== 4) return null;
+  const order = [0, 1, 2, 3].sort((a, b) => aa[b] - aa[a] || b - a);
+  const top = order[0];
+  let text = aa[top] >= 50
+    ? `Mostly ${ATES_LABELS[top]}`
+    : `${ATES_LABELS[top]} and ${ATES_LABELS[order[1]]}`;
+  if (aa[3] > 0 && top !== 3 && !(aa[top] < 50 && order[1] === 3)) text += `, with some Extreme terrain (${aa[3]}%)`;
+  return { dominant: top, text };
+}

@@ -1,4 +1,10 @@
-# AutoATES v2.0 trial (Spearhead, Nov 2026)
+# AutoATES v2.0 in the Snow Finder
+
+Steve approved AutoATES after this trial (2026-11-08). The region-wide run is
+`snow/pipeline/autoates_tiles.py` (resumable tiles, pinned AutoATES commit); `flowpy_cli.py` and
+`shim/` here are shared with it. The trial scripts below are kept for reference.
+
+## The Spearhead trial (Nov 2026)
 
 A test of [AutoATES v2.0](https://github.com/AutoATES/AutoATES-v2.0) (Toft et al., 2024,
 NHESS 24, 1779–1793, doi:10.5194/nhess-24-1779-2024) against the Snow Finder's own
@@ -10,7 +16,7 @@ unchanged from a separate clone; only the map outputs (data) come back here.
 ## Run it
 
 ```bash
-cd snow/pipeline/experiments/autoates
+cd snow/pipeline/autoates
 git clone --depth 1 https://github.com/AutoATES/AutoATES-v2.0 src
 pip install psutil
 python3 prepare.py                       # DEM + percent canopy cover, 30 m UTM 10N

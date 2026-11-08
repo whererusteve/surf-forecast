@@ -87,3 +87,5 @@ dialog button { background: var(--accent); color: #fff; border: 0; padding: 8px 
   background: var(--panel); color: var(--ink); padding: 8px 14px; border-radius: 8px; box-shadow: 0 2px 10px #0005; font-size: 0.9em; }
 #status.error { background: #fde8e8; color: #8a1c1c; }
 #status[hidden] { display: none; }
+.mix.ates div { color: #fff; }
+.mix.ates div:first-child { color: #111; }

@@ -6,8 +6,8 @@ from affine import Affine
 from rasterio.warp import reproject, Resampling
 from rasterio import features
 from scipy import ndimage
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "js"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "js"))
 from regions import REGIONS
 import sources as S, terrain as T
 RUN = str(Path(__file__).resolve().parent)
@@ -50,7 +50,7 @@ print(f"our exposed cells that AutoATES calls simple or none: {100 * (ours & ~hi
 
 # --- Per zone: AutoATES class mix vs our slope mix ---
 import subprocess
-d = json.load(open(str(Path(__file__).resolve().parents[3] / "data" / "zones-sea-to-sky.json")))
+d = json.load(open(str(Path(__file__).resolve().parents[2] / "data" / "zones-sea-to-sky.json")))
 def ring(zz):
     x, y = round(zz["c"][1] * 1e4), round(zz["c"][0] * 1e4); pts = []
     for i in range(0, len(zz["p"]), 2):

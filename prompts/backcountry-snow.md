@@ -249,6 +249,10 @@ Decided at the zone-map check-in (2026-11-07):
 - **Heli-ski tenures and proposed ski resorts:** keep them, highlight them on zones, don't exclude. Cat-ski tenures stay excluded.
 - **Cultural areas:** flag them with why they're cultural and who to contact (`snow/content/cultural_areas.json`). Block areas documented as cultural use (Cultural Places). Cultural Management Areas are flagged. Joffre Lakes / Pipi7íyekw is an exception: it closes only part of the year, so it's flagged with the closure dates.
 
+Decided after the AutoATES trial (2026-11-08):
+- **AutoATES v2.0 replaces the homemade exposure rule** for the "approach exposed to avalanche terrain" flag and for route-finding (challenging terrain or worse counts as exposed). Steve reviewed the Spearhead trial map: "AutoATES looks good."
+- **Each zone shows its AutoATES class mix**, clearly labelled as a model estimate and not an official ATES rating. Official ATES maps, where they exist, come first.
+
 Still to ask, when it comes up:
 1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
 2. The phase 1b list of BC regions, once the usage data suggests one. [STEVE's ANSWER: Sea to sky, duffey lake, coquihalla, rogers' pass, rocky mountains, babine mountains, terrace area, stikine, dease lake, stewart]

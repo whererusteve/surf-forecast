@@ -3,7 +3,7 @@ from pathlib import Path
 import sys, numpy as np, rasterio
 from rasterio.warp import reproject, Resampling, transform_bounds
 from rasterio.transform import from_origin
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from regions import REGIONS
 import sources as S, terrain as T
 BB = dict(lat_min=49.99, lat_max=50.13, lon_min=-122.93, lon_max=-122.72)
