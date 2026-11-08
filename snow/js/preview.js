@@ -2,7 +2,7 @@
 // slope mix, wind exposure and the areas to respect. No forecasts yet.
 
 import {
-  decodeRing, bestAccess, accessSummary, fmtHours, aspectName, windDirs, fixedHours,
+  decodeRing, bestAccess, accessSummary, fmtHours, aspectName, windDirs, fixedHours, rescaleHours,
   USE_LABELS, BAND_LABELS, SLOPE_CLASSES,
 } from "./zones.js";
 
@@ -138,7 +138,7 @@ function select(z) {
   const dirs = (o) => [o.strong.length ? `<b>${o.strong.join(", ")}</b>` : "", o.some.join(", ")].filter(Boolean).join(", ") || "none to speak of";
   const access = Object.entries(z.acc).map(([mode, a]) => {
     const fixed = fixedHours(mode, a, d.gates);
-    const scaled = { ...a, h: fixed + (a.h - fixed) * (4 / s.rate) };
+    const scaled = { ...a, h: rescaleHours(a.h, fixed, s.rate) };
     const gate = mode === "lift" ? d.gates[a.gate] : null;
     return `<li>${esc(accessSummary(mode, scaled, fixed))}${gate ? ` <span class="small">via ${esc(gate.name)}</span>` : ""}
       ${a.exp ? '<br><span class="warn">The approach crosses or runs under avalanche terrain.</span>' : ""}</li>`;

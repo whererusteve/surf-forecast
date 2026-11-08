@@ -176,10 +176,6 @@ def us_snowmobile_trails(bbox):
                         fields="trail_name,trail_no,snowmobile_managed,snowmobile_accpt")
 
 
-def us_fs_roads(bbox):
-    return arcgis_query(f"{EDW}/EDW_RoadBasic_01/MapServer/0", bbox, fields="NAME,ID,OPER_MAINT_LEVEL")
-
-
 def us_winter_sites(bbox):
     """Forest Service recreation sites with winter activities (Sno-Parks, ski areas, ski routes)."""
     x0, y0, x1, y1 = bbox
@@ -193,16 +189,6 @@ def us_winter_sites(bbox):
 # ---------------------------------------------------------------------------
 # Avalanche forecast regions
 # ---------------------------------------------------------------------------
-
-def avcan_areas():
-    return cached_json("avalanche", "avcan-areas",
-                       lambda: json.loads(http("https://api.avalanche.ca/forecasts/en/areas")))
-
-
-def avcan_metadata():
-    return cached_json("avalanche", "avcan-metadata",
-                       lambda: json.loads(http("https://api.avalanche.ca/forecasts/en/metadata")))
-
 
 def aorg_zones():
     return cached_json("avalanche", "aorg-map-layer",

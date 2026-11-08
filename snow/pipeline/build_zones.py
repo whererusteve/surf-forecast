@@ -282,7 +282,6 @@ def road_lines(region, b, ka, rid):
                 sled.append(shape(f["geometry"]))
     if closures:
         cl = unary_union(closures)
-        moved = [g for g in plowed if g.intersects(cl)]
         plowed = [g.difference(cl) for g in plowed]
         plowed = [g for g in plowed if not g.is_empty]
     return plowed, sled
