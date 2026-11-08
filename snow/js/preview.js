@@ -230,6 +230,13 @@ async function loadRegion(id) {
   draw();
   status("");
   try { localStorage.setItem("snowPreview.region", id); } catch { /* private mode */ }
+  // ?zone=S-0123 opens one zone directly (handy for sharing a link)
+  const wanted = new URLSearchParams(location.search).get("zone");
+  const z = wanted && state.data.zones.find((x) => x.id === wanted);
+  if (z) {
+    map.setView(z.c, 13);
+    select(z);
+  }
 }
 
 async function init() {
@@ -237,7 +244,9 @@ async function init() {
   let saved = null;
   try { saved = localStorage.getItem("snowPreview.region"); } catch { /* private mode */ }
   $("region").innerHTML = idx.regions.map((r) => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join("");
-  const first = idx.regions.find((r) => r.id === saved) ? saved : "sea-to-sky";
+  const asked = new URLSearchParams(location.search).get("region");
+  const pick = asked || saved;
+  const first = idx.regions.find((r) => r.id === pick) ? pick : "sea-to-sky";
   $("region").value = first;
   $("region").addEventListener("change", (e) => loadRegion(e.target.value));
   for (const el of document.querySelectorAll("#filters input, #filters select, #colour")) el.addEventListener("change", draw);
