@@ -9,11 +9,11 @@
     "lon_min": -123.55,
     "lon_max": -121.85
    },
-   "zones": 10785,
+   "zones": 10781,
    "centres": [
     "avcan"
    ],
-   "generated": "2026-11-09T04:49+00:00"
+   "generated": "2026-11-09T05:27+00:00"
   },
   {
    "id": "north-cascades",
