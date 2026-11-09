@@ -1,6 +1,6 @@
 {
   "region": "north-cascades",
-  "built": "2026-11-07T18:37+00:00",
+  "built": "2026-11-09T02:21+00:00",
   "sources": [
     {
       "key": "tribal",
@@ -19,7 +19,8 @@
   "zones": 9645,
   "droppedTooFar": 3404,
   "useLevels": {
-    "little sign of travel": 9635,
-    "occasional": 10
+    "little sign of travel": 9619,
+    "well-travelled": 13,
+    "occasional": 13
   }
 }
