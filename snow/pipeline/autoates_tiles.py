@@ -11,7 +11,9 @@ ATES rating.
 It is slow (about 30-45 minutes per tile on 4 cores), so tiles are cached and the run
 resumes where it stopped. Tiles with the most day-trip zones go first.
 
-Run:    python snow/pipeline/autoates_tiles.py [region ...]
+Run:    python snow/pipeline/autoates_tiles.py [--day-trips] [--hours H] [region ...]
+          --day-trips  only tiles with at least DAY_TRIP_MIN zones reachable within 5 h
+          --hours H    stop between tiles before H hours have passed, so no tile is cut off
 Output: snow/pipeline/cache/autoates/<region>/tile_<i>_<j>.tif  (int16: 1-4, -9999 none)
 """
 
@@ -44,6 +46,9 @@ OUT = HERE / "cache" / "autoates"
 RES = 30.0           # metres (Copernicus GLO-30)
 CORE_M = 15000       # tile size kept
 PAD_M = 2000         # extra terrain around each tile so runout from just outside is counted
+DAY_TRIP_H = 5       # one-way hours that still make a day trip
+DAY_TRIP_MIN = 10    # --day-trips skips tiles with fewer day-trip zones than this
+FIRST_TILE_GUESS_S = 3000  # time to allow for the next tile, until a slower one is seen (slowest so far ~50 min)
 
 
 def utm_crs(region):
@@ -66,8 +71,9 @@ def tiles(region, crs):
             yield i, j, (x0 + i * CORE_M, y0 + j * CORE_M, x0 + (i + 1) * CORE_M, y0 + (j + 1) * CORE_M)
 
 
-def priority(rid, crs, bounds_list):
-    """Order tiles: most day-trip zones (well-travelled ones count double) first; skip empty tiles."""
+def priority(rid, crs, bounds_list, day_trips_only=False):
+    """Order tiles: most day-trip zones (well-travelled ones count double) first; skip empty tiles.
+    With day_trips_only, also skip tiles holding fewer than DAY_TRIP_MIN day-trip zones."""
     from rasterio.warp import transform as tf
     p = HERE.parent / "data" / f"zones-{rid}.json"
     zones = json.loads(p.read_text())["zones"] if p.exists() else []
@@ -78,10 +84,14 @@ def priority(rid, crs, bounds_list):
     for t in bounds_list:
         _, _, (a, b_, c, d) = t
         score = 0.0
+        day = 0
         for z, x, y in zip(zones, xs, ys):
             if a <= x < c and b_ <= y < d:
                 best = min(v["h"] for v in z["acc"].values())
-                score += (3 if best <= 5 else 1) * (2 if z["use"] == 2 else 1)
+                day += best <= DAY_TRIP_H
+                score += (3 if best <= DAY_TRIP_H else 1) * (2 if z["use"] == 2 else 1)
+        if day_trips_only and day < DAY_TRIP_MIN:
+            continue
         if score > 0:
             out.append((score, t))
     return sorted(out, key=lambda s: -s[0])
@@ -177,19 +187,25 @@ def write_empty(work, dest, box, crs):
         d.write(np.full((H, W), -9999, np.int16), 1)
 
 
-def main(rids):
+def main(rids, day_trips_only=False, hours=None):
     ensure_source()
+    start = time.time()
+    slowest = FIRST_TILE_GUESS_S
     for rid in rids:
         region = REGIONS[rid]
         crs = utm_crs(region)
         (OUT / rid).mkdir(parents=True, exist_ok=True)
-        todo = priority(rid, crs, list(tiles(region, crs)))
+        todo = priority(rid, crs, list(tiles(region, crs)), day_trips_only)
         done = sum(1 for _, (i, j, _) in todo if (OUT / rid / f"tile_{i}_{j}.tif").exists())
-        print(f"{rid}: {len(todo)} tiles with zones, {done} already done", flush=True)
+        kind = "day-trip tiles" if day_trips_only else "tiles with zones"
+        print(f"{rid}: {len(todo)} {kind}, {done} already done", flush=True)
         for score, (i, j, box) in todo:
             dest = OUT / rid / f"tile_{i}_{j}.tif"
             if dest.exists():
                 continue
+            if hours and time.time() - start + slowest > hours * 3600:
+                print(f"TIME UP: stopping before tile {i},{j} to stay within {hours} h", flush=True)
+                return
             t0 = time.time()
             try:
                 n = run_tile(region, crs, box, dest)
@@ -197,10 +213,19 @@ def main(rids):
                 print(f"  tile {i},{j} failed ({err}); skipping for now", flush=True)
                 continue
             done += 1
+            slowest = max(slowest, time.time() - t0)
             print(f"  tile {i},{j} (priority {score:.0f}): {n} start cells, {time.time() - t0:.0f} s "
                   f"[{done}/{len(todo)}]", flush=True)
     print("ALL DONE", flush=True)
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:] or list(REGIONS))
+    args = sys.argv[1:]
+    day = "--day-trips" in args
+    hours = None
+    if "--hours" in args:
+        k = args.index("--hours")
+        hours = float(args[k + 1])
+        del args[k:k + 2]
+    rids = [a for a in args if not a.startswith("--")] or list(REGIONS)
+    main(rids, day_trips_only=day, hours=hours)
