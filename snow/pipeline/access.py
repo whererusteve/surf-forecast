@@ -136,7 +136,8 @@ class Router:
             steps += 1
             if steps > 100_000:
                 break
-        return dict(skin_km=skin_km, sled_km=sled_km, climb=climb,
+        start = int(node if node < self.N else self.sled_cells[node - self.N])
+        return dict(skin_km=skin_km, sled_km=sled_km, climb=climb, start=start,
                     exposed_cells=exposed_cells, max_exposed_run=max_exposed_run)
 
 

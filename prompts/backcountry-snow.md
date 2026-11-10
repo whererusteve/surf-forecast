@@ -253,6 +253,12 @@ Decided after the AutoATES trial (2026-11-08):
 - **AutoATES v2.0 replaces the homemade exposure rule** for the "approach exposed to avalanche terrain" flag and for route-finding (challenging terrain or worse counts as exposed). Steve reviewed the Spearhead trial map: "AutoATES looks good."
 - **Each zone shows its AutoATES class mix**, clearly labelled as a model estimate and not an official ATES rating. Official ATES maps, where they exist, come first.
 
+Decided 2026-11-10:
+- **AutoATES scope:** Sea-to-Sky day-trip tiles only for now (done: 99% of day-trip zones). North Cascades and South Selkirks tiles wait; work stays on Sea-to-Sky.
+- **Diamond Head:** the road is open to the lot, but chains are mandatory in winter. Added as a trailhead; routes starting there carry the chains note.
+- **SR 20:** snowmobiling the closed highway is legal, so the closed section is a sled route.
+- **Lillooet River Cultural Management Area:** name the Douglas and Skatin bands (added alongside Líl̓wat; Steve to confirm Líl̓wat stays and to supply contacts for Skatin, and a direct one for Douglas).
+
 Still to ask, when it comes up:
 1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
 2. The phase 1b list of BC regions, once the usage data suggests one. [STEVE's ANSWER: Sea to sky, duffey lake, coquihalla, rogers' pass, rocky mountains, babine mountains, terrace area, stikine, dease lake, stewart]

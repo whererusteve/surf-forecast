@@ -145,7 +145,9 @@ function select(z) {
     const fixed = fixedHours(mode, a, d.gates);
     const scaled = { ...a, h: rescaleHours(a.h, fixed, s.rate) };
     const gate = mode === "lift" ? d.gates[a.gate] : null;
+    const th = a.th != null && d.trailheads ? d.trailheads[a.th] : null;
     return `<li>${esc(accessSummary(mode, scaled, fixed))}${gate ? ` <span class="small">via ${esc(gate.name)}</span>` : ""}
+      ${th ? `<br><span class="small">From ${esc(th.name)}.</span> <span class="warn">${esc(th.note)}</span>` : ""}
       ${a.exp ? '<br><span class="warn">The approach crosses or runs under avalanche terrain (challenging or worse).</span>'
         : a.exp === null ? '<br><span class="small">Approach exposure not assessed yet: the avalanche terrain model hasn\'t run here.</span>' : ""}</li>`;
   }).join("");

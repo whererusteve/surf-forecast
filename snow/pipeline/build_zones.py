@@ -284,6 +284,11 @@ def road_lines(region, b, ka, rid):
                 sled.append(shape(f["geometry"]))
     if closures:
         cl = unary_union(closures)
+        # closed roads where snowmobiles are allowed become sled routes
+        sled_ok = [box(*c["bbox"]) for c in ka["winterRoadClosures"] if c["region"] == rid and c.get("sledOK")]
+        if sled_ok:
+            so = unary_union(sled_ok)
+            sled += [g for g in (p.intersection(so) for p in plowed) if not g.is_empty]
         plowed = [g.difference(cl) for g in plowed]
         plowed = [g for g in plowed if not g.is_empty]
     return plowed, sled
@@ -503,11 +508,15 @@ def build(rid):
             p = f["properties"]
             if p.get("latitude") and "sno-park" in (p.get("recareaname") or "").lower():
                 trailheads.append(dict(name=p["recareaname"], lat=float(p["latitude"]), lon=float(p["longitude"])))
+    th_out, th_of_cell = [], {}   # trailheads with something to tell people (e.g. chains required)
     for t in trailheads:
         if not (bb["lat_min"] <= t["lat"] <= bb["lat_max"] and bb["lon_min"] <= t["lon"] <= bb["lon_max"]):
             continue
         i, j = to_cell(t["lat"], t["lon"])
         road_starts.append((i * cshape[1] + j, 0.0))
+        if t.get("note"):
+            th_of_cell[i * cshape[1] + j] = len(th_out)
+            th_out.append(dict(name=t["name"], note=t["note"]))
 
     dist_skin, pred_skin = router.run(road_starts, use_sled=False)
     dist_sled, pred_sled = router.run(road_starts, use_sled=True)
@@ -612,6 +621,8 @@ def build(rid):
             leg = router.trace(pred_skin, tgt_skin[zid], dy_c, dx_c, exp_flat, lc, zid)
             acc["skin"] = dict(h=round(float(h_skin[zid]), 1), km=round(leg["skin_km"], 1),
                                up=int(round(leg["climb"], -1)), exp=exposed_flag(leg))
+            if leg["start"] in th_of_cell:
+                acc["skin"]["th"] = th_of_cell[leg["start"]]
         if np.isfinite(h_sled[zid]) and h_sled[zid] <= MAX_HOURS:
             leg = router.trace(pred_sled, tgt_sled[zid], dy_c, dx_c, exp_flat, lc, zid)
             skin_h = A.skin_hours(leg["skin_km"], leg["climb"])
@@ -620,6 +631,8 @@ def build(rid):
                                    sledH=round(leg["sled_km"] / A.SLED_KMH, 1),
                                    km=round(leg["skin_km"], 1), up=int(round(leg["climb"], -1)),
                                    exp=exposed_flag(leg))
+                if leg["start"] in th_of_cell:
+                    acc["sled"]["th"] = th_of_cell[leg["start"]]
         if dist_lift is not None and np.isfinite(h_lift[zid]) and h_lift[zid] <= MAX_HOURS and \
                 h_lift[zid] < h_skin[zid] - 0.5:
             leg = router.trace(pred_lift, tgt_lift[zid], dy_c, dx_c, exp_flat, lc, zid)
@@ -690,6 +703,7 @@ def build(rid):
         forecastPoints=fpoints,
         gates=[dict(name=g["name"], resort=g["resort"], note=g["note"], url=g["url"], rideHours=g["rideHours"])
                for g, _ in gates],
+        trailheads=th_out,
         permits=[p for p in ka["permitsAndClosures"] if p["region"] == rid],
         areas=[area_record(a) for a in highlights],
         closedAreas=[area_record(a) for a in blocked_cultural],
