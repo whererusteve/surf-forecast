@@ -259,6 +259,12 @@ Decided 2026-11-10:
 - **SR 20:** snowmobiling the closed highway is legal, so the closed section is a sled route.
 - **Lillooet River Cultural Management Area:** name the Douglas and Skatin bands (added alongside Líl̓wat; Steve to confirm Líl̓wat stays and to supply contacts for Skatin, and a direct one for Douglas).
 
+Decided 2026-11-11:
+- **Small alpine pieces** join their neighbouring zone instead of being dropped (Steve spotted empty alpine around the Callaghan, Brandywine and Powder Mountain).
+- **Gentle glaciers aren't zones**, but tapping one shows it's a glacier, with Steve's glacier note.
+- **Lillooet River:** Líl̓wat stays. No direct contacts for Douglas and Skatin: the app says to consult their band office.
+- **Next:** curation mode, then the hazard panel (built 2026-11-11; wording in `snow/content/hazard.json` waiting for Steve's rewrite).
+
 Still to ask, when it comes up:
 1. If the Strava heatmap's terms don't allow reuse: is the open-data usage estimate good enough, or should we approach Strava (e.g. Strava Metro) properly? - [STEVE'S ANSWER: open data usage is good enough for now]
 2. The phase 1b list of BC regions, once the usage data suggests one. [STEVE's ANSWER: Sea to sky, duffey lake, coquihalla, rogers' pass, rocky mountains, babine mountains, terrace area, stikine, dease lake, stewart]

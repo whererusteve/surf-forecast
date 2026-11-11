@@ -1,10 +1,13 @@
 // Zone preview: shows the pipeline's zones on a map, with travel time, use level,
-// slope mix, wind exposure and the areas to respect. No forecasts yet.
+// slope mix, wind exposure, the areas to respect, and the official avalanche forecast.
+// No snow forecast yet.
 
 import {
   decodeRing, bestAccess, accessSummary, fmtHours, aspectName, windDirs, fixedHours, rescaleHours,
   USE_LABELS, BAND_LABELS, SLOPE_CLASSES, ATES_LABELS, atesSummary,
 } from "./zones.js";
+import { forecastFor } from "./avalanche.js";
+import { DANGER_COL, BAND_KEYS, dangerLabel, forecastStatus, problemsForZone, zoneLevel, needsCaution, fill } from "./hazard.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -197,6 +200,8 @@ function select(z) {
     <p class="small">${esc(z.id)} · ${BAND_LABELS[z.b]} · ${z.el[0].toLocaleString()}–${z.el[2].toLocaleString()} m · ${z.km2} km² · faces ${aspectName(z.asp)} (${z.asp}°)</p>
     ${z.md ? '<p class="warn">Over 5 hours one way: overnight / multi-day objective.</p>' : ""}
 
+    <section id="hazard" class="hazard"><h3>Avalanche danger</h3><p class="small">${esc((state.hazardText || {}).loading || "Loading the official avalanche forecast…")}</p></section>
+
     <h3>Slope angles</h3>
     <div class="mix">${z.mix.map((v, i) => `<div style="flex:${Math.max(v, 1)}" class="m${i}" title="${SLOPE_CLASSES[i]}: ${v}%">${v >= 8 ? v + "%" : ""}</div>`).join("")}</div>
     <p class="small">${z.mix.map((v, i) => `${SLOPE_CLASSES[i]}: ${v}%`).join(" · ")}. Official ATES rating: ${z.ates ? `in the ATES-mapped area “${esc(z.ates)}”. Its map comes first; see it for ratings` : "unrated"}.</p>
@@ -221,6 +226,80 @@ function select(z) {
   `;
   curation?.afterDetail(z, $("detailBody"));
   $("detail").hidden = false;
+  loadHazard(z);
+}
+
+// --- Avalanche danger (official forecast, shown beside everything else, never blended) ---
+
+async function loadHazard(z) {
+  if (!state.hazardText) {
+    try { state.hazardText = await (await fetch("content/hazard.json")).json(); } catch { state.hazardText = {}; }
+  }
+  let r;
+  try { r = await forecastFor(z.c[0], z.c[1]); } catch (err) { r = { error: err }; }
+  if (state.selected !== z || !$("hazard")) return;   // another zone was opened meanwhile
+  $("hazard").innerHTML = hazardHtml(z, r, state.hazardText);
+}
+
+const fmtWhen = (iso) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+};
+const fmtAge = (ms) => (ms < 90 * 60000 ? `${Math.round(ms / 60000)} min` : `${Math.round(ms / 3600000)} h`);
+const swatch = (level, text) => `<span class="danger d${level}" style="background:${DANGER_COL[level]}">${esc(text)}</span>`;
+
+function hazardHtml(z, r, t) {
+  const us = z.c[0] < 49;
+  const fb = us ? t.usFallbackLink || { label: "avalanche.org", url: "https://avalanche.org/" }
+    : t.fallbackLink || { label: "avalanche.ca", url: "https://avalanche.ca/map" };
+  const link = (url, label) => `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(label)}</a>`;
+  const head = `<h3>${esc(t.heading || "Avalanche danger")} <span class="small">(${esc(t.headingNote || "official forecast")})</span></h3>`;
+  const foot = `<p class="small">${esc(t.cantSee || "")} <b>${esc(t.notSafe || "")}</b></p>` +
+    (!us && t.planning ? `<p class="small">${esc(t.planningHeading || "Plan the trip")}: ${t.planning.map((p) => link(p.url, p.label)).join(" · ")}</p>` : "");
+  if (r.error) {
+    return head + `<p class="warn">${fill(esc(t.unavailable), { link: link(fb.url, fb.label) })}</p>` + foot;
+  }
+  const f = r.forecast;
+  if (!f) return head + `<p class="warn">${esc(t.noCentre || "")}</p>` + foot;
+
+  const status = forecastStatus(f);
+  const vars = { source: esc(f.source), issued: esc(fmtWhen(f.issued)), when: esc(fmtWhen(f.validUntil)),
+    zone: esc(f.zoneName || ""), band: esc(BAND_LABELS[z.b].toLowerCase()), age: fmtAge(Date.now() - r.at) };
+  let html = head;
+  if (status === "expired") html += `<p class="warn">${fill(esc(t.expired), vars)}</p>`;
+  if (r.source === "stale") html += `<p class="warn">${fill(esc(t.saved), vars)}</p>`;
+  html += `<p class="small">${fill(esc(t.authority), vars)} ${f.url ? link(f.url, t.linkText || "Read the full forecast") : ""}</p>`;
+  const grey = status === "expired" ? " expired" : "";
+
+  if (f.earlySeason) {
+    html += `<p class="${grey}">${fill(esc(t.earlySeason), vars)}</p>`;
+  } else if (f.kind === "overall") {
+    html += `<p class="${grey}">${swatch(f.overall.level, dangerLabel(f.overall.level))}</p><p class="small">${fill(esc(t.overallNote), vars)}</p>`;
+  } else {
+    const rows = [2, 1, 0].map((b) => `<tr class="${b === z.b ? "here" : ""}"><th>${esc(BAND_LABELS[b])}</th>${f.days.map((d) => {
+      const x = d.ratings[BAND_KEYS[b]];
+      return `<td>${swatch(x.level, x.level ? dangerLabel(x.level) : (x.text || t.noRating || "No rating"))}</td>`;
+    }).join("")}</tr>`).join("");
+    html += `<table class="danger-table${grey}"><thead><tr><th></th>${f.days.map((d) => `<th title="${esc(d.label)}">${esc(d.label.length > 4 ? d.label.slice(0, 3) : d.label)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table>
+      <p class="small">${fill(esc(t.bandNote), vars)}</p>`;
+  }
+
+  const level = zoneLevel(f, z.b);
+  if (status !== "expired" && needsCaution(level)) {
+    const steep = (z.mix[1] || 0) + (z.mix[2] || 0) + (z.mix[3] || 0);
+    html += `<p class="caution">${fill(esc(t.caution), { danger: esc(dangerLabel(level)), day: esc((f.days[0] && f.days[0].label) || "today"), steep })}</p>`;
+  }
+
+  if (f.kind === "bands" && !f.earlySeason) {
+    const probs = problemsForZone(f, z.b, aspectName(z.asp));
+    html += `<h4>${esc(t.problemsHeading || "Avalanche problems")}</h4>` + (probs.length ? `<ul class="problems${grey}">${probs.map((p) => `<li>
+        <b>${esc(p.type)}</b>: ${esc(p.elevationNames.join(", ") || "all elevations")} · ${esc(p.aspects.map((a) => a.toUpperCase()).join(", ") || "all aspects")}
+        · ${esc(p.likelihood)}${p.size[0] ? ` · size ${p.size[0]}${p.size[1] && p.size[1] !== p.size[0] ? `–${p.size[1]}` : ""}` : ""}
+        ${!p.inBand ? `<br><span class="small">${esc(t.problemNotInBand || "")}</span>` : ""}
+        ${p.inBand && p.aspectMatch ? `<br><span class="warn">${fill(esc(t.aspectMatch), { aspect: esc(aspectName(z.asp)) })}</span>` : ""}
+      </li>`).join("")}</ul>` : `<p class="small">${esc(t.noProblems || "")}</p>`);
+  }
+  return html + foot;
 }
 
 function atesHtml(z, d) {

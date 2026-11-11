@@ -1,0 +1,38 @@
+{
+  "_about": "Steve edits this file: all the wording in the avalanche danger panel. Words in {curly brackets} are filled in by the app; keep them, move them, or drop them. Placeholder wording until Steve rewrites it (brief, step 5 check-in).",
+
+  "heading": "Avalanche danger",
+  "headingNote": "official forecast",
+  "loading": "Loading the official avalanche forecast…",
+
+  "authority": "From {source}, issued {issued}. Their forecast is the authority: read it in full before you go.",
+  "linkText": "Read the full forecast",
+  "bandNote": "This zone is mostly {band}, so that row is highlighted.",
+  "noRating": "No rating",
+
+  "earlySeason": "Early season: {source} isn't issuing daily danger ratings yet. Avalanches can happen wherever there's enough snow to slide.",
+  "expired": "This forecast expired {when}. Check {source} for a newer one before you go.",
+  "saved": "Couldn't refresh the forecast, so this is the copy saved on your device {age} ago.",
+  "unavailable": "Couldn't load the avalanche forecast. Check {link} directly before you go.",
+  "noCentre": "No avalanche centre forecasts this spot. Without a forecast, you're relying on your own observations and snowpack assessment.",
+  "overallNote": "This is the highest danger anywhere in the {zone} forecast zone. Danger by elevation and the avalanche problems are in the full forecast.",
+
+  "problemsHeading": "Avalanche problems",
+  "problemNotInBand": "Not forecast at this zone's elevation.",
+  "aspectMatch": "This zone faces {aspect}, one of the aspects named for this problem.",
+  "noProblems": "No avalanche problems listed.",
+
+  "caution": "{danger} in this zone's elevation band on {day}. On days like this, simple, lower-angle and treed terrain is the lower-consequence choice. {steep}% of this zone is steeper than 30°.",
+
+  "cantSee": "This app can't see buried weak layers, slab structure, cornices, glide cracks or local wind effects. The forecast and what you see on the day can.",
+  "notSafe": "A low rating, or no rating, never means the terrain is safe.",
+
+  "planningHeading": "Plan the trip",
+  "planning": [
+    { "label": "Avalanche Canada trip planner", "url": "https://avalanche.ca/planning/trip-planner" },
+    { "label": "The Avaluator", "url": "https://avalanche.ca/avaluator" },
+    { "label": "Avalanche Skills Training (AST) courses", "url": "https://avalanche.ca/training" }
+  ],
+  "fallbackLink": { "label": "avalanche.ca", "url": "https://avalanche.ca/map" },
+  "usFallbackLink": { "label": "avalanche.org", "url": "https://avalanche.org/" }
+}

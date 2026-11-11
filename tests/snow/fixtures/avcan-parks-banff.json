@@ -1,0 +1,259 @@
+{
+ "id": "e6e2959c-5045-4c30-9607-0cd80a53a95a_afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+ "slug": "e6e2959c-5045-4c30-9607-0cd80a53a95a_afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+ "url": "https://avalanche.ca/forecasts/e6e2959c-5045-4c30-9607-0cd80a53a95a_afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+ "type": "avalancheforecast",
+ "area": {
+  "id": "afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+  "name": "afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+  "bbox": null
+ },
+ "report": {
+  "id": "e6e2959c-5045-4c30-9607-0cd80a53a95a_afe9ffd14c0637d10e2530857f8e7a8cba0277f33351d3b31c8f37f4111c6ecf",
+  "forecaster": "Parks Canada",
+  "dateIssued": "2026-11-10T18:30:37.400Z",
+  "validUntil": "2026-11-13T23:00:00.000Z",
+  "timezone": "America/Edmonton",
+  "title": "Banff-East Side 93N-Field-Kootenay-Lake Louise-Little Yoho-LLSA-Sunshine-West Side 93N",
+  "highlights": "<h1>Watch for deeper snow accumulation and slab formation in isolated alpine gully features. Climbers should watch for small wind slabs that can have serious consequences.</h1><p></p>",
+  "confidence": {
+   "rating": {
+    "value": "low",
+    "display": "Low"
+   },
+   "statements": [
+    "We are uncertain due to a limited number of field observations."
+   ]
+  },
+  "summaries": [
+   {
+    "type": {
+     "value": "avalanche-summary",
+     "display": "Avalanche Summary"
+    },
+    "content": " <p>Reports are limited, but there have been no recent avalanche observations; only minor sluffing/cracking in steep alpine terrain. The main snowpack concern is small, isolated wind slabs in alpine gullies.</p>"
+   },
+   {
+    "type": {
+     "value": "snowpack-summary",
+     "display": "Snowpack Summary"
+    },
+    "content": " <p>Recent snowfall of 5\u201310 cm, combined with strong SW\u2013SE winds, has formed wind slabs in the alpine. The new snow and wind slabs overlie 20\u201330 cm of faceted snow at higher elevations. Reports indicate snow depths of up to 80 cm on glaciers, while snow cover remains minimal at treeline and below. Overall, the early-season snowpack is thin and variable.</p>"
+   },
+   {
+    "type": {
+     "value": "weather-summary",
+     "display": "Weather Summary"
+    },
+    "content": " <p>For current weather conditions, see the&nbsp;<a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.avalanche.ca/map\">telemetry stations&nbsp;</a>on the Avalanche Canada map page.</p><p>For weather forecasts, check out Environment Canada's products for <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://weather.gc.ca/city/pages/ab-49_metric_e.html\">Banff</a>, <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://weather.gc.ca/city/pages/bc-11_metric_e.html\">Kootenay</a> and <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://weather.gc.ca/city/pages/bc-68_metric_e.html\">Yoho</a>.</p><p>For weather maps, graphics and satellite images check out the&nbsp;<a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.avalanche.ca/weather/forecast\">Mountain Weather Forecast</a>.</p><p>For a technical weather forecast check out <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://spotwx.com/\">SpotWx</a></p>"
+   }
+  ],
+  "dangerRatings": [
+   {
+    "date": {
+     "value": "2026-11-10T18:30:37Z",
+     "display": "Tuesday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "norating",
+       "display": "No Rating"
+      }
+     }
+    }
+   },
+   {
+    "date": {
+     "value": "2026-11-11T18:30:37Z",
+     "display": "Wednesday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "norating",
+       "display": "No Rating"
+      }
+     }
+    }
+   },
+   {
+    "date": {
+     "value": "2026-11-12T18:30:37Z",
+     "display": "Thursday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "norating",
+       "display": "No Rating"
+      }
+     }
+    }
+   }
+  ],
+  "problems": [
+   {
+    "type": {
+     "value": "windslab",
+     "display": "Wind Slab"
+    },
+    "comment": "<p>Isolated small wind slabs are possible in steep alpine lee terrain.</p>",
+    "factors": [
+     {
+      "type": {
+       "value": "elevation",
+       "display": "What Elevation?"
+      },
+      "graphic": {
+       "id": "elevation-0-0-1_en",
+       "url": "https://assets.avalanche.ca/images/Elevation/Elevation-0-0-1_EN.png",
+       "alt": " Alpine"
+      }
+     },
+     {
+      "type": {
+       "value": "aspect",
+       "display": "Which Slopes?"
+      },
+      "graphic": {
+       "id": "aspect-1-1-1-1-0-0-0-0_en",
+       "url": "https://assets.avalanche.ca/images/Compass/compass-1-1-1-1-0-0-0-0_EN.png",
+       "alt": " North, Northeast, East, Southeast"
+      }
+     },
+     {
+      "type": {
+       "value": "likelihood",
+       "display": "Chances of Avalanches?"
+      },
+      "graphic": {
+       "id": "likelihood-unlikely_en",
+       "url": "https://assets.avalanche.ca/images/Likelihood/Likelihood-1_EN.png",
+       "alt": " Unlikely"
+      }
+     },
+     {
+      "type": {
+       "value": "size",
+       "display": "Expected Size?"
+      },
+      "graphic": {
+       "id": "size-1-2_en",
+       "url": "https://assets.avalanche.ca/images/size/Size-1-2_EN.png",
+       "alt": " Small - Small"
+      }
+     }
+    ],
+    "data": {
+     "elevations": [
+      {
+       "value": "alp",
+       "display": "Alpine"
+      }
+     ],
+     "aspects": [
+      {
+       "value": "e",
+       "display": "East"
+      },
+      {
+       "value": "se",
+       "display": "Southeast"
+      },
+      {
+       "value": "n",
+       "display": "North"
+      },
+      {
+       "value": "ne",
+       "display": "Northeast"
+      }
+     ],
+     "aspectElevations": [
+      "n_alp",
+      "ne_alp",
+      "e_alp",
+      "se_alp"
+     ],
+     "likelihood": {
+      "value": "unlikely",
+      "display": "unlikely"
+     },
+     "expectedSize": {
+      "min": "1.0",
+      "max": "1.5"
+     }
+    }
+   }
+  ],
+  "terrainAndTravelAdvice": [
+   "Be careful with wind-loaded pockets, especially near ridge crests and rollovers."
+  ],
+  "message": null,
+  "season": null,
+  "comment": null,
+  "isFullTranslation": true
+ },
+ "version": 1,
+ "owner": {
+  "value": "parks-byk",
+  "display": "Parks Canada",
+  "isExternal": false,
+  "url": "Parks Canada"
+ },
+ "notifications": [
+  {
+   "type": "info",
+   "content": "<p>Area closures for avalanche control are in effect periodically from November to May. Click <a href=\"https://www.pc.gc.ca/en/pn-np/mtn/securiteenmontagne-mountainsafety/avalanche/declenchementpreventif-controlareas?_ga=2.80778963.573438189.1667223637-385521292.1638363862\">here</a> for more information and maps."
+  }
+ ],
+ "media": {
+  "images": []
+ }
+}

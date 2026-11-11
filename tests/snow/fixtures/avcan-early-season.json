@@ -1,0 +1,140 @@
+{
+ "id": "181218e0-ea42-4417-9387-9500569056ab_53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+ "slug": "181218e0-ea42-4417-9387-9500569056ab_53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+ "url": "https://avalanche.ca/forecasts/181218e0-ea42-4417-9387-9500569056ab_53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+ "type": "avalancheforecast",
+ "area": {
+  "id": "53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+  "name": "53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+  "bbox": null
+ },
+ "report": {
+  "id": "181218e0-ea42-4417-9387-9500569056ab_53bb614cadbd487077d867dec6007dfed090d20fbc0cbfe941451b6af2df33ed",
+  "forecaster": "Avalanche Canada",
+  "dateIssued": "2026-10-01T23:00:00.000Z",
+  "validUntil": "2026-11-26T00:00:00.000Z",
+  "timezone": "America/Vancouver",
+  "title": "Akamina-Badshot-Battle-Birkenhead-Blue River-Bonnington-Boun",
+  "highlights": "<p><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://avalanche.ca/early-season-conditions\">Avalanches hazard may exist where there is snow</a>. Pack a transceiver, shovel, and probe, and factor avalanches into your trip plan. Daily avalanche forecasts will begin November 25 at 4 PM.</p>",
+  "confidence": {
+   "rating": {
+    "value": "noRating",
+    "display": "No Rating"
+   }
+  },
+  "summaries": [
+   {
+    "type": {
+     "value": "weather-summary",
+     "display": "Weather Summary"
+    },
+    "content": " <p>More details can be found in the <a href =\"https://www.avalanche.ca/weather/forecast\">Mountain Weather Forecast</a>.</p>"
+   }
+  ],
+  "dangerRatings": [
+   {
+    "date": {
+     "value": "2026-10-02T23:00:00Z",
+     "display": "Friday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     }
+    }
+   },
+   {
+    "date": {
+     "value": "2026-10-03T23:00:00Z",
+     "display": "Saturday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     }
+    }
+   },
+   {
+    "date": {
+     "value": "2026-10-04T23:00:00Z",
+     "display": "Sunday"
+    },
+    "ratings": {
+     "alp": {
+      "display": "Alpine",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "tln": {
+      "display": "Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     },
+     "btl": {
+      "display": "Below Treeline",
+      "rating": {
+       "value": "earlyseason",
+       "display": "Early Season"
+      }
+     }
+    }
+   }
+  ],
+  "problems": [],
+  "terrainAndTravelAdvice": [],
+  "message": null,
+  "season": null,
+  "comment": null,
+  "isFullTranslation": false
+ },
+ "version": 1,
+ "owner": {
+  "value": "avalanche-canada",
+  "display": "Avalanche Canada",
+  "isExternal": false,
+  "url": "https://avalanche.ca/en"
+ },
+ "media": {
+  "images": []
+ }
+}

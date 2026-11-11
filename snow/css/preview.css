@@ -108,3 +108,22 @@ dialog a.btn { display: inline-block; background: var(--accent); color: #fff; pa
 .removals { padding-left: 20px; } .removals li { margin-bottom: 10px; }
 .removals button.plain { padding: 2px 8px; font-size: 0.85em; margin-top: 4px; }
 @media (max-width: 720px) { #curateBar { bottom: 8px; font-size: 0.82em; } }
+
+/* Avalanche danger panel */
+.hazard { border: 1px solid var(--line); border-radius: 8px; padding: 2px 12px 8px; margin: 10px 0 4px; }
+.hazard h3 { margin-top: 10px; }
+.hazard h4 { font-size: 0.9em; margin: 10px 0 2px; }
+.danger { display: inline-block; padding: 1px 7px; border-radius: 4px; font-size: 0.85em; font-weight: 600; color: #111; white-space: nowrap; }
+.danger.d4, .danger.d5 { color: #fff; }
+.danger.d0 { color: #333; font-weight: 400; }
+.danger-table { border-collapse: collapse; width: 100%; font-size: 0.9em; margin: 6px 0 2px; table-layout: fixed; }
+.danger-table th:first-child { width: 24%; }
+.danger-table .danger { white-space: normal; font-size: 0.74em; line-height: 1.25; display: block; text-align: center; padding: 2px 1px; }
+.danger-table th, .danger-table td { text-align: left; padding: 3px 4px; }
+.danger-table thead th { font-weight: 600; color: var(--muted); font-size: 0.85em; }
+.danger-table tbody th { font-weight: 400; font-size: 0.9em; }
+.danger-table tr.here { outline: 2px solid var(--accent); outline-offset: -1px; }
+.danger-table tr.here th { font-weight: 700; }
+.expired { opacity: 0.4; filter: grayscale(1); }
+.caution { border-left: 4px solid #f79218; background: color-mix(in srgb, #f79218 12%, var(--panel)); padding: 6px 10px; border-radius: 0 6px 6px 0; }
+.problems { padding-left: 18px; margin: 4px 0; } .problems li { margin-bottom: 6px; }
