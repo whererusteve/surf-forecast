@@ -9,7 +9,7 @@ import {
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-const state = { data: null, layer: null, areaLayer: null, selected: null, byId: new Map() };
+const state = { data: null, layer: null, areaLayer: null, glacierLayer: null, glacierText: null, selected: null, byId: new Map() };
 let curation = null;   // curation mode tools, loaded only with ?curate=1
 
 // --- Map --------------------------------------------------------------------
@@ -57,6 +57,7 @@ function settings() {
     modes: [...document.querySelectorAll(".mode:checked")].map((x) => x.value),
     uses: new Set([...document.querySelectorAll(".use:checked")].map((x) => Number(x.value))),
     showAreas: $("showAreas").checked,
+    showGlaciers: $("showGlaciers").checked,
   };
 }
 
@@ -67,6 +68,7 @@ function draw() {
   if (!d) return;
   const s = settings();
   if (state.layer) state.layer.remove();
+  drawGlaciers(s.showGlaciers);   // first, so zones are drawn on top of them
   state.layer = L.layerGroup();
   let shown = 0;
   for (const z of d.zones) {
@@ -89,6 +91,7 @@ function draw() {
   $("count").textContent = `${shown.toLocaleString()} of ${d.zones.length.toLocaleString()} zones shown.`;
   $("legend").innerHTML = `<b>${esc($("colour").selectedOptions[0].text.replace("Colour: ", ""))}</b>` +
     LEGENDS[s.colour].map(([c, t]) => `<div><span class="sw" style="background:${c}"></span>${esc(t)}</div>`).join("") +
+    (s.showGlaciers ? '<div><span class="sw glacier"></span>Glacier (not a zone)</div>' : "") +
     (s.showAreas ? `<div><span class="sw line heli"></span>Heli-ski tenure</div>
       <div><span class="sw line cult"></span>Cultural area (flagged)</div>
       <div><span class="sw line prop"></span>Proposed resort</div>
@@ -101,6 +104,38 @@ const AREA_STYLE = {
   proposedResort: { color: "#b35806", weight: 2, dashArray: "8 4", fill: false },
   closed: { color: "#222", weight: 1, fillColor: "#222", fillOpacity: 0.45 },
 };
+
+const GLACIER_STYLE = { color: "#3f86b8", weight: 1, fillColor: "#bfe3f7", fillOpacity: 0.45 };
+
+function drawGlaciers(show) {
+  if (state.glacierLayer) state.glacierLayer.remove();
+  state.glacierLayer = null;
+  if (!show || !state.data.glaciers) return;
+  state.glacierLayer = L.layerGroup();
+  for (const g of state.data.glaciers) {
+    for (const ring of g.rings) {
+      const p = L.polygon(ring.map(([x, y]) => [y, x]), GLACIER_STYLE);
+      p.on("click", () => { if (!curation?.isDrawing()) selectGlacier(g); });
+      state.glacierLayer.addLayer(p);
+    }
+  }
+  state.glacierLayer.addTo(map);
+}
+
+function selectGlacier(g) {
+  state.selected = null;
+  const t = state.glacierText || {};
+  const names = g.n ? g.n.join(", ") : "";
+  $("detailBody").innerHTML = `
+    <h2>${esc(t.title || "Glacier")}${names ? `: ${esc(names)}` : ""}</h2>
+    <p class="small">About ${g.km2} km² · ${g.el[0].toLocaleString()}–${g.el[1].toLocaleString()} m ·
+      about ${Math.round(g.gentle * 100)}% gentler than ${state.data.settings.minSlope || 15}°</p>
+    <p>${esc(t.paragraph || "")}</p>
+    ${t.bullets ? `<ul>${t.bullets.map((b) => `<li>${esc(b)}</li>`).join("")}</ul>` : ""}
+    <p class="small">${esc(t.sourceNote || "")}</p>
+    <p class="small">Steeper slopes on and around the glacier are zones of their own: tap them for terrain, access and avalanche details.</p>`;
+  $("detail").hidden = false;
+}
 
 function drawAreas(show) {
   if (state.areaLayer) state.areaLayer.remove();
@@ -266,6 +301,7 @@ async function init() {
     const { initCuration } = await import("./curate-ui.js");
     curation = initCuration({ map, getRegion: () => $("region").value });
   }
+  fetch("content/glaciers.json").then((r) => r.json()).then((t) => { state.glacierText = t; }).catch(() => {});
   fetchRegion(first).catch(() => {});   // start downloading while the disclaimer is read
   await showDisclaimer();
   await loadRegion(first);

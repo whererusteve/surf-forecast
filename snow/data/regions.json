@@ -13,7 +13,7 @@
    "centres": [
     "avcan"
    ],
-   "generated": "2026-11-11T03:30+00:00"
+   "generated": "2026-11-11T03:33+00:00"
   },
   {
    "id": "north-cascades",
@@ -28,7 +28,7 @@
    "centres": [
     "NWAC"
    ],
-   "generated": "2026-11-11T00:46+00:00"
+   "generated": "2026-11-11T03:34+00:00"
   },
   {
    "id": "south-selkirks",
@@ -44,7 +44,7 @@
     "avcan",
     "IPAC"
    ],
-   "generated": "2026-11-11T00:47+00:00"
+   "generated": "2026-11-11T03:35+00:00"
   }
  ]
 }

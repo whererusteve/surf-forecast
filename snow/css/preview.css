@@ -64,6 +64,7 @@ main { position: relative; flex: 1; min-height: 0; display: flex; }
 .sw.line { background: none; border: 2px dashed; height: 10px; }
 .sw.heli { border-color: #6a3d9a; } .sw.cult { border-color: #1b7837; border-style: dotted; } .sw.prop { border-color: #b35806; }
 .sw.closed { background: #222a; border: 1px solid #222; }
+.sw.glacier { background: #bfe3f7; border: 1px solid #3f86b8; }
 
 dialog { max-width: 520px; width: calc(100% - 32px); border: 0; border-radius: 10px; padding: 20px;
   background: var(--panel); color: var(--ink); box-shadow: 0 10px 40px #0007; }

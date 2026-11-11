@@ -1,0 +1,11 @@
+{
+  "_about": "Steve edits this file. It's shown when someone taps a glacier or permanent snowfield that isn't part of a ski zone. Gentle glacier terrain is the way in, not a zone (Steve, 2026-11-11). Placeholder wording for Steve to rewrite.",
+  "title": "Glacier",
+  "paragraph": "Glacier or permanent snow. Gentle glacier terrain is shown as the way in, not as a ski zone.",
+  "bullets": [
+    "Crevasses can hide under fresh snow, even on low-angle ice. Rope up and carry crevasse rescue gear.",
+    "Glacier travel and crevasse rescue are skills to learn on a course before the trip, not on the day.",
+    "Snow bridges weaken as the day warms and through the spring."
+  ],
+  "sourceNote": "Outlined from ESA WorldCover 2021 satellite land cover. Glacier edges shift every year, and crevasse fields aren't mapped."
+}

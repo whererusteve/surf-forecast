@@ -71,6 +71,7 @@ SIMPLIFY_DEG = 0.0004   # polygon simplification for the web (~30-40 m)
 # are still removed.
 EXCLUDE_HELI_TENURES = False
 HIGHLIGHT_MIN_SHARE = 0.15   # a highlighted area covering this much of a zone is noted on it
+GLACIER_MIN_KM2 = 0.2        # smaller ice and snow patches aren't drawn as glaciers
 CONTENT = ROOT / "content"
 
 USE_LABELS = ["little sign of travel", "occasional", "well-travelled"]
@@ -491,6 +492,7 @@ def build(rid):
                                           terrainKm2=round(float((m & ridable).sum() * cell_km2), 2)))
             cur_mask |= m
         ridable &= ~cur_mask
+        excl |= cur_mask
         lab, n = segment(ridable, band, aspect_s, grid)
     st = zone_stats(lab, n, z, slope, aspect, tree, cls, lap, band, grid, t_lo)
     relief = st["zmax"] - st["zmin"]
@@ -631,6 +633,8 @@ def build(rid):
 
     # --- names ---
     names = nearest_names(region, b)
+    glacier_list = glaciers(cls, z, slope, excl, grid, region, b)
+    log(f"glaciers: {len(glacier_list)} outlined ({time.time() - t0:.0f} s)")
     polys = polygons(lab, n, grid)
     log(f"polygons done ({time.time() - t0:.0f} s)")
 
@@ -746,7 +750,7 @@ def build(rid):
         sources="Copernicus GLO-30 DEM; ESA WorldCover 2021; BC Data Catalogue; US Census TIGER; USFS EDW; "
                 "OpenStreetMap contributors (ohsome, GPS traces); Avalanche Canada Mountain Information Network",
         bbox=bb, centres=region["avalanche_centres"],
-        settings=dict(munterUp=A.MUNTER_UP, munterDown=A.MUNTER_DOWN, sledKmh=A.SLED_KMH,
+        settings=dict(minSlope=MIN_SLOPE, munterUp=A.MUNTER_UP, munterDown=A.MUNTER_DOWN, sledKmh=A.SLED_KMH,
                       multiDayH=A.MULTI_DAY_H, alphaDeg=ALPHA_DEG),
         bandsNote=("Elevation bands as published by the avalanche centre: " + "; ".join(official)) if official else
                   "Elevation bands estimated from where forest gives way to open terrain (ESA WorldCover), "
@@ -755,6 +759,7 @@ def build(rid):
         gates=[dict(name=g["name"], resort=g["resort"], note=g["note"], url=g["url"], rideHours=g["rideHours"])
                for g, _ in gates],
         trailheads=th_out,
+        glaciers=glacier_list,
         permits=[p for p in ka["permitsAndClosures"] if p["region"] == rid],
         areas=[area_record(a) for a in highlights],
         closedAreas=[area_record(a) for a in blocked_cultural],
@@ -868,6 +873,59 @@ def forecast_points(zones, t_lo, t_hi, grid):
         for m in members:
             m["fp"] = fi
     return fps
+
+
+def glaciers(cls, z, slope, removed, grid, region, b):
+    """Outlines of glaciers and permanent snow (ESA WorldCover), for the map.
+
+    Gentle glacier terrain is travel terrain, not a zone (Steve, 2026-11-11), but people
+    should see it's a glacier when they tap it. Areas removed from the app stay removed.
+    """
+    m = (cls == T.WC_SNOW) & ~np.isnan(z)
+    m = ndimage.binary_closing(ndimage.binary_opening(m, iterations=1), iterations=2) & ~removed
+    lab, n = ndimage.label(m)
+    if not n:
+        return []
+    cell_km2 = float(grid.dy * np.mean(grid.dx_row) / 1e6)
+    km2 = np.bincount(lab.ravel(), minlength=n + 1) * cell_km2
+    keep = km2 >= GLACIER_MIN_KM2
+    keep[0] = False
+    lab[~keep[lab]] = 0
+    flat = lab.ravel()
+    zf = np.nan_to_num(z.ravel())
+    zmin = ndimage.minimum(zf, flat, index=np.arange(n + 1))
+    zmax = ndimage.maximum(zf, flat, index=np.arange(n + 1))
+    gentle = np.bincount(flat, weights=(slope.ravel() < MIN_SLOPE), minlength=n + 1) / np.maximum(
+        np.bincount(flat, minlength=n + 1), 1)
+    parts = defaultdict(list)
+    for geom, val in features.shapes(lab, mask=lab > 0, transform=grid.transform, connectivity=4):
+        parts[int(val)].append(shape(geom))
+    named = glacier_names(region, b)
+    out = []
+    for gid, geoms in parts.items():
+        g = unary_union(geoms).simplify(SIMPLIFY_DEG, preserve_topology=True)
+        polys_ = [g] if g.geom_type == "Polygon" else list(getattr(g, "geoms", []))
+        rings = [[[round(x, 4), round(y, 4)] for x, y in pg.exterior.coords] for pg in polys_ if pg.area > 2e-6]
+        if not rings:
+            continue
+        rec = dict(km2=round(float(km2[gid]), 1), el=[int(zmin[gid]), int(zmax[gid])],
+                   gentle=round(float(gentle[gid]), 2), rings=rings)
+        inside = sorted({nm for la, lo, nm in named if g.contains(Point(lo, la))})
+        if inside:
+            rec["n"] = inside[:4] + (["and others"] if len(inside) > 4 else [])
+        out.append(rec)
+    out.sort(key=lambda r: -r["km2"])
+    return out
+
+
+def glacier_names(region, b):
+    """Official BC names of glaciers and icefields, as (lat, lon, name)."""
+    if "CA" not in region["country"]:
+        return []
+    fs = S.bc_wfs("WHSE_BASEMAPPING.GNS_GEOGRAPHICAL_NAMES_SP", b, geom="GEOMETRY",
+                  props=["GEOGRAPHICAL_NAME", "FEATURE_TYPE", "LATITUDE", "LONGITUDE"])
+    return [(f["properties"]["LATITUDE"], f["properties"]["LONGITUDE"], f["properties"]["GEOGRAPHICAL_NAME"])
+            for f in fs if f["properties"]["FEATURE_TYPE"].startswith(("Glacier", "Icefield", "Snowfield"))]
 
 
 def nearest_names(region, b):
