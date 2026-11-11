@@ -1,6 +1,6 @@
 {
   "region": "sea-to-sky",
-  "built": "2026-11-10T14:46+00:00",
+  "built": "2026-11-11T00:45+00:00",
   "sources": [
     {
       "key": "reserve",
@@ -28,11 +28,11 @@
     }
   ],
   "curated": [],
-  "zones": 10945,
-  "droppedTooFar": 974,
+  "zones": 11111,
+  "droppedTooFar": 966,
   "useLevels": {
-    "occasional": 733,
-    "little sign of travel": 9652,
-    "well-travelled": 560
+    "occasional": 830,
+    "little sign of travel": 9568,
+    "well-travelled": 713
   }
 }

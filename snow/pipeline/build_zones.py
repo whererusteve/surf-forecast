@@ -299,6 +299,15 @@ def road_lines(region, b, ka, rid):
 # ---------------------------------------------------------------------------
 
 def segment(ridable, band, aspect_s, grid):
+    """Cut ridable slopes into zones: one elevation band, one way of facing, one ~3 km tile.
+
+    Alpine ridges and bowls change direction every few hundred metres, so cutting by
+    aspect leaves many pieces under MIN_CELLS. Dropping them lost ~40% of alpine and
+    treeline terrain (Steve spotted empty alpine around the Callaghan, 2026-11-11), so:
+      1. small pieces join the big neighbour in the same band they share most edge with;
+      2. pieces still small are regrouped by band and tile, ignoring which way they face;
+      3. only what is still under MIN_CELLS is dropped.
+    """
     oct_ = (np.round(aspect_s / 45).astype(np.int32) % 8)
     ti = TILE_M / grid.dy
     tj = TILE_M / float(np.mean(grid.dx_row))
@@ -306,15 +315,56 @@ def segment(ridable, band, aspect_s, grid):
     cols = (np.arange(grid.W) // tj).astype(np.int32)
     ntj = int(cols.max()) + 1
     tile = rows[:, None] * ntj + cols[None, :]
-    key = (band.astype(np.int32) * 8 + oct_) * (int(tile.max()) + 1) + tile
+    nt = int(tile.max()) + 1
+    key = (band.astype(np.int32) * 8 + oct_) * nt + tile
     key = np.where(ridable, key, -1)
     lab = cc_label(key, background=-1, connectivity=1).astype(np.int32)
     n = int(lab.max())
+    band_of = np.zeros(n + 1, np.int32)
+    band_of[lab] = band
+    for _ in range(6):
+        counts = np.bincount(lab.ravel(), minlength=n + 1)
+        big = counts >= MIN_CELLS
+        big[0] = False
+        lut = _absorb_small(lab, n, big, band_of)
+        if lut is None:
+            break
+        lab = lut[lab]
     counts = np.bincount(lab.ravel(), minlength=n + 1)
-    small = counts < MIN_CELLS
-    small[0] = True
-    lab[small[lab]] = 0
+    small = (counts < MIN_CELLS) & (np.arange(n + 1) > 0)
+    left = small[lab]
+    if left.any():
+        key2 = np.where(left, band.astype(np.int32) * nt + tile, -1)
+        lab2 = cc_label(key2, background=-1, connectivity=1).astype(np.int32)
+        lab = np.where(left, 0, lab)
+        lab = np.where(lab2 > 0, lab2 + n, lab)
+    counts = np.bincount(lab.ravel())
+    drop = counts < MIN_CELLS
+    drop[0] = True
+    lab[drop[lab]] = 0
     return _relabel(lab)
+
+
+def _absorb_small(lab, n, big, band_of):
+    """Map each small piece to the big same-band neighbour it shares the most edge with.
+    Returns a label lookup table, or None when no small piece touches a big one."""
+    a = np.concatenate([lab[:, :-1].ravel(), lab[:-1, :].ravel()])
+    b = np.concatenate([lab[:, 1:].ravel(), lab[1:, :].ravel()])
+    m = (a != b) & (a > 0) & (b > 0)
+    a, b = a[m], b[m]
+    a, b = np.concatenate([a, b]), np.concatenate([b, a])      # both directions
+    m = ~big[a] & big[b] & (band_of[a] == band_of[b])
+    if not m.any():
+        return None
+    a, b = a[m].astype(np.int64), b[m].astype(np.int64)
+    pair, cnt = np.unique(a * (n + 1) + b, return_counts=True)
+    src, dst = pair // (n + 1), pair % (n + 1)
+    order = np.lexsort((-cnt, src))                           # per piece, longest shared edge first
+    src, dst = src[order], dst[order]
+    first = np.r_[True, src[1:] != src[:-1]]
+    lut = np.arange(n + 1, dtype=np.int32)
+    lut[src[first]] = dst[first]
+    return lut
 
 
 def _relabel(lab):
