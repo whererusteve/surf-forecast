@@ -10,6 +10,7 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 const state = { data: null, layer: null, areaLayer: null, selected: null, byId: new Map() };
+let curation = null;   // curation mode tools, loaded only with ?curate=1
 
 // --- Map --------------------------------------------------------------------
 
@@ -79,7 +80,7 @@ function draw() {
     const poly = L.polygon(decodeRing(z.c, z.p), {
       color: col, weight: 0.6, fillColor: col, fillOpacity: 0.5,
     });
-    poly.on("click", () => select(z));
+    poly.on("click", () => { if (!curation?.isDrawing()) select(z); });
     state.layer.addLayer(poly);
     shown++;
   }
@@ -121,8 +122,9 @@ function drawAreas(show) {
 // --- Detail panel -----------------------------------------------------------
 
 function areaHtml(a, closed = false) {
-  const nations = (a.nations || []).map((n) => n.contact
-    ? `<a href="${esc(n.contact)}" target="_blank" rel="noopener">${esc(n.name)}</a>` : esc(n.name)).join(", ");
+  const nations = (a.nations || []).map((n) => (n.contact
+    ? `<a href="${esc(n.contact)}" target="_blank" rel="noopener">${esc(n.name)}</a>` : esc(n.name))
+    + (n.contactNote ? ` (${esc(n.contactNote)})` : "")).join(", ");
   const src = (a.sources || []).map((x) => `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join(" · ");
   return `<div class="area ${esc(a.kind)} ${closed ? "closed" : ""}">
     <b>${closed ? "Closed: " : ""}${esc(a.title)}</b>${a.status === "seasonal" ? ' <span class="pill">seasonal</span>' : ""}
@@ -182,6 +184,7 @@ function select(z) {
 
     ${flags || permits ? `<h3>Know before you go</h3>${flags}${permits}` : ""}
   `;
+  curation?.afterDetail(z, $("detailBody"));
   $("detail").hidden = false;
 }
 
@@ -259,6 +262,10 @@ async function init() {
   });
   $("filtersDone").addEventListener("click", () => { $("filters").hidden = true; $("filtersBtn").setAttribute("aria-expanded", "false"); });
   $("closeDetail").addEventListener("click", () => { $("detail").hidden = true; });
+  if (new URLSearchParams(location.search).get("curate") === "1") {
+    const { initCuration } = await import("./curate-ui.js");
+    curation = initCuration({ map, getRegion: () => $("region").value });
+  }
   fetchRegion(first).catch(() => {});   // start downloading while the disclaimer is read
   await showDisclaimer();
   await loadRegion(first);

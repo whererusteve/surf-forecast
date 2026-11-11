@@ -192,7 +192,8 @@ def cultural_areas(region, b):
             title=entry.get("title") or name,
             designation=objective,
             why=entry.get("why") or kind["why"],
-            nations=[content["nations"][k] for k in nation_keys if k in content["nations"]],
+            nations=[{f: content["nations"][k][f] for f in ("name", "contact", "contactNote") if f in content["nations"][k]}
+                     for k in nation_keys if k in content["nations"]],   # internal review notes stay out of app data
             sources=[content["sources"][k] for k in (entry.get("sources") or kind.get("sources") or [])],
             review=entry.get("review", True),
             geom=shape(f["geometry"]),
@@ -486,7 +487,7 @@ def build(rid):
             inside = np.bincount(lab[m], minlength=n + 1)[1:]
             tot = np.bincount(lab.ravel(), minlength=n + 1)[1:]
             dropped = int(((inside / np.maximum(tot, 1)) >= CURATED_DROP_FRAC).sum())
-            report["curated"].append(dict(index=k, zonesRemoved=dropped,
+            report["curated"].append(dict(index=k, id=sh.get("id"), zonesRemoved=dropped,
                                           terrainKm2=round(float((m & ridable).sum() * cell_km2), 2)))
             cur_mask |= m
         ridable &= ~cur_mask

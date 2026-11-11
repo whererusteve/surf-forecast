@@ -89,3 +89,21 @@ dialog button { background: var(--accent); color: #fff; border: 0; padding: 8px 
 #status[hidden] { display: none; }
 .mix.ates div { color: #fff; }
 .mix.ates div:first-child { color: #111; }
+
+/* Curation mode (?curate=1) */
+#curateBar { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 1150;
+  display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; max-width: calc(100% - 24px);
+  background: var(--panel); color: var(--ink); padding: 8px 12px; border-radius: 10px; box-shadow: 0 2px 12px #0006;
+  border: 2px solid #b00020; font-size: 0.9em; }
+#curateBar [hidden] { display: none; }
+.curate-box { border: 2px dashed #b00020; border-radius: 8px; padding: 8px 10px; margin: 0 28px 10px 0; }
+.curate-box button { background: #b00020; color: #fff; border: 0; font-weight: 600; }
+dialog textarea { width: 100%; font: inherit; padding: 6px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--panel); color: var(--ink); margin: 6px 0 10px; }
+dialog .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+dialog button.plain { background: var(--panel); color: var(--ink); border: 1px solid var(--line); font-weight: 400; }
+dialog a.btn { display: inline-block; background: var(--accent); color: #fff; padding: 8px 16px; border-radius: 6px;
+  font-weight: 600; text-decoration: none; }
+.removals { padding-left: 20px; } .removals li { margin-bottom: 10px; }
+.removals button.plain { padding: 2px 8px; font-size: 0.85em; margin-top: 4px; }
+@media (max-width: 720px) { #curateBar { bottom: 8px; font-size: 0.82em; } }

@@ -11,8 +11,8 @@
     "Lil'wat Nation": {"name": "Líl̓wat Nation", "contact": "https://lilwat.ca/contact/"},
     "Squamish Nation": {"name": "Squamish Nation (Sḵwx̱wú7mesh Úxwumixw)", "contact": "https://www.squamish.net/contact-us/"},
     "N'Quatqua": {"name": "N'Quatqua", "contact": "https://www.nquatqua.ca/"},
-    "Douglas First Nation": {"name": "Douglas First Nation (Xa'xtsa)", "contact": "https://www2.gov.bc.ca/gov/content/environment/natural-resource-stewardship/consulting-with-first-nations/first-nations-negotiations/first-nations-a-z-listing/douglas-first-nation-xa-xtsa", "review": "Contact link is the Province's First Nations listing page, not the Nation's own site. Steve to swap in a direct contact if he has one."},
-    "Skatin Nations": {"name": "Skatin Nations", "contact": null, "review": "No contact page confirmed yet. Steve to add one."}
+    "Douglas First Nation": {"name": "Douglas First Nation (Xa'xtsa)", "contact": null, "contactNote": "consult their band office"},
+    "Skatin Nations": {"name": "Skatin Nations", "contact": null, "contactNote": "consult their band office"}
   },
 
   "sources": {
@@ -61,7 +61,7 @@
     },
     "Lillooet River": {
       "why": "A First Nations' Cultural Management Area in the Sea to Sky land-use plan: an area with high First Nations cultural values, where use and development are meant to protect those values. Recreation isn't banned. The Líl̓wat Nation describes the Lillooet River as the heart of its traditional territory.",
-      "nations": ["Lil'wat Nation", "Douglas First Nation", "Skatin Nations"], "sources": ["s2sPlan", "s2sOrder"], "review": "Steve, 2026-11-10: name the Douglas and Skatin bands. Lil'wat kept as well; Steve to confirm."
+      "nations": ["Lil'wat Nation", "Douglas First Nation", "Skatin Nations"], "sources": ["s2sPlan", "s2sOrder"], "checked": "Steve, 2026-11-10/11: name Lil'wat, Douglas and Skatin; no direct contacts for Douglas and Skatin, so say to consult their band office."
     },
     "Upper Birkenhead River Corridor": {
       "title": "Qwelímak / Upper Birkenhead River Corridor",
